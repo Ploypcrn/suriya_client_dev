@@ -1,0 +1,88 @@
+{
+  "hash": "206c6480",
+  "configHash": "e1f1036c",
+  "lockfileHash": "a91d7ef2",
+  "browserHash": "10e3414a",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/.pnpm/react@18.2.0/node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "f6303170",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "3ff4bf96",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/.pnpm/react-router-dom@6.22.0_react-dom@18.2.0_react@18.2.0/node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "c2561def",
+      "needsInterop": false
+    },
+    "react-redux": {
+      "src": "../../node_modules/.pnpm/react-redux@9.1.0_@types+react@18.2.55_react@18.2.0_redux@5.0.1/node_modules/react-redux/dist/react-redux.mjs",
+      "file": "react-redux.js",
+      "fileHash": "018271f0",
+      "needsInterop": false
+    },
+    "antd/es/config-provider/index": {
+      "src": "../../node_modules/.pnpm/antd@5.14.1_moment@2.30.1_react-dom@18.2.0_react@18.2.0/node_modules/antd/es/config-provider/index.js",
+      "file": "antd_es_config-provider_index.js",
+      "fileHash": "c63a0ad5",
+      "needsInterop": false
+    },
+    "antd": {
+      "src": "../../node_modules/.pnpm/antd@5.14.1_moment@2.30.1_react-dom@18.2.0_react@18.2.0/node_modules/antd/es/index.js",
+      "file": "antd.js",
+      "fileHash": "114c5e89",
+      "needsInterop": false
+    },
+    "@reduxjs/toolkit": {
+      "src": "../../node_modules/.pnpm/@reduxjs+toolkit@2.2.1_react-redux@9.1.0_react@18.2.0/node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs",
+      "file": "@reduxjs_toolkit.js",
+      "fileHash": "333e672d",
+      "needsInterop": false
+    },
+    "@ant-design/icons": {
+      "src": "../../node_modules/.pnpm/@ant-design+icons@5.3.0_react-dom@18.2.0_react@18.2.0/node_modules/@ant-design/icons/es/index.js",
+      "file": "@ant-design_icons.js",
+      "fileHash": "576ac730",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../node_modules/.pnpm/axios@1.6.7/node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "e530b985",
+      "needsInterop": false
+    },
+    "lodash": {
+      "src": "../../node_modules/.pnpm/lodash@4.17.21/node_modules/lodash/lodash.js",
+      "file": "lodash.js",
+      "fileHash": "9831f52b",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-LB7NABFK": {
+      "file": "chunk-LB7NABFK.js"
+    },
+    "chunk-HQHGVUGW": {
+      "file": "chunk-HQHGVUGW.js"
+    },
+    "chunk-TK2HPDLI": {
+      "file": "chunk-TK2HPDLI.js"
+    },
+    "chunk-LUCFAKNK": {
+      "file": "chunk-LUCFAKNK.js"
+    },
+    "chunk-5QSVINME": {
+      "file": "chunk-5QSVINME.js"
+    },
+    "chunk-UV5CTPV7": {
+      "file": "chunk-UV5CTPV7.js"
+    }
+  }
+}
