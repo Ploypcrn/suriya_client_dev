@@ -824,9 +824,13 @@ const PageManage = () => {
 
           <Col span={6}>
             <CardWrapper>
-              {isEditMode && (
-                <Card>
+           
+
+               <Card>
                   <Row gutter={24}>
+                       {isEditMode && (
+               
+              
                     <Col span={24}>
                       <Form.Item
                         style={{ width: "100%" }}
@@ -855,6 +859,7 @@ const PageManage = () => {
                         </Select>
                       </Form.Item>
                     </Col>
+                    )}
                     <Col span={24}>
                       <Form.Item
                         label="ผู้ออกบิล"
@@ -925,6 +930,9 @@ const PageManage = () => {
                       <Form.Item
                         label="การจ่ายเงิน"
                         name="paymentTypeId"
+                          rules={[
+                          { required: true, message: "กรุณาเลือกข้อมูล" },
+                        ]}
                         wrapperCol={{ span: 24 }}
                       >
                         <Select
@@ -982,7 +990,6 @@ const PageManage = () => {
                     </Col>
                   </Row>
                 </Card>
-              )}
             </CardWrapper>
           </Col>
         </Row>
