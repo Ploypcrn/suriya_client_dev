@@ -92,13 +92,13 @@ const PageManage = () => {
         <Form.Item
           name={[index, "price"]}
           rules={[
-            { required: true },
-            {
-              validator: (_, value) =>
-                value > 0
-                  ? Promise.resolve()
-                  : Promise.reject(new Error("Price must be greater than 0")),
-            },
+            { required: false },
+            // {
+            //   validator: (_, value) =>
+            //     value > -1
+            //       ? Promise.resolve()
+            //       : Promise.reject(new Error("Price must be greater than 0")),
+            // },
           ]}
           noStyle
         >
@@ -129,13 +129,13 @@ const PageManage = () => {
         return (
           <Form.Item
             rules={[
-              { required: true },
-              {
-                validator: (_, value) =>
-                  value > 0
-                    ? Promise.resolve()
-                    : Promise.reject(new Error("Price must be greater than 0")),
-              },
+              { required: false },
+              // {
+              //   validator: (_, value) =>
+              //     value > 0
+              //       ? Promise.resolve()
+              //       : Promise.reject(new Error("Price must be greater than 0")),
+              // },
             ]}
             name={[index, "amount"]}
             noStyle
