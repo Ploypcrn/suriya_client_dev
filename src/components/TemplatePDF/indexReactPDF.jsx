@@ -232,7 +232,7 @@ const QuotationPDF = () => {
 			flex: 1,
 			padding: 5,
 			borderTop: 1,
-			borderRight: 1,
+			borderRightWidth: 1,
 			borderColor: "#000", // เพิ่มเส้นขอบให้กับแต่ละเซลล์
 			borderStyle: "solid", // เพิ่มเส้นขอบให้กับแต่ละเซลล์
 		},
@@ -443,7 +443,7 @@ const QuotationPDF = () => {
 							{ flex: 0.2 },
 							{ borderLeft: 1 },
 							{
-								borderBottom: index === products.length - 1 ? 1 : 0,
+								borderBottomWidth: index === products.length - 1 ? 1 : 0,
 							},
 							{ textAlign: "center" },
 							{
@@ -458,7 +458,7 @@ const QuotationPDF = () => {
 							styles.tableCell,
 							{ flex: 2 },
 							{
-								borderBottom: index === products.length - 1 ? 1 : 0,
+								borderBottomWidth: index === products.length - 1 ? 1 : 0,
 							},
 						]}
 					>
@@ -469,7 +469,7 @@ const QuotationPDF = () => {
 							styles.tableCell,
 							{ textAlign: "right" },
 							{
-								borderBottom: index === products.length - 1 ? 1 : 0,
+								borderBottomWidth: index === products.length - 1 ? 1 : 0,
 							},
 						]}
 					>
@@ -480,7 +480,7 @@ const QuotationPDF = () => {
 							styles.tableCell,
 							{ textAlign: "right" },
 							{
-								borderBottom: index === products.length - 1 ? 1 : 0,
+								borderBottomWidth: index === products.length - 1 ? 1 : 0,
 							},
 						]}
 					>
@@ -491,7 +491,7 @@ const QuotationPDF = () => {
 							styles.tableCell,
 							{ textAlign: "right" },
 							{
-								borderBottom: index === products.length - 1 ? 1 : 0,
+								borderBottomWidth: index === products.length - 1 ? 1 : 0,
 							},
 							{
 								borderBottomRightRadius: index === products.length - 1 ? 3 : 0,
@@ -664,7 +664,7 @@ const QuotationPDF = () => {
 						</View>
 					</View>
 				</View>
-				<View style={{ borderBottom: 1, borderColor: "#f0f0f0" }} />
+				<View style={{ borderBottomWidth: 1, borderColor: "#f0f0f0" }} />
 				<View
 					style={{
 						display: "flex",
@@ -707,7 +707,7 @@ const QuotationPDF = () => {
 					style={{
 						display: "flex",
 						flexDirection: "row",
-						border: 1,
+						borderWidth: 1,
 						borderColor: "#000",
 						borderStyle: "solid",
 						borderRadius: 5,
@@ -719,14 +719,14 @@ const QuotationPDF = () => {
 							style={[
 								{ flex: 1 },
 								{
-									borderRight: index === approvalData.length - 1 ? 0 : 1,
+									borderRightWidth: index === approvalData.length - 1 ? 0 : 1,
 								},
 							]}
 						>
 							<Text
 								style={[
 									{
-										borderBottom: 1,
+										borderBottomWidth: 1,
 										padding: 5,
 									},
 								]}
@@ -780,7 +780,7 @@ const QuotationPDF = () => {
 										{/* ตีเส้น */}
 										<View
 											style={{
-												borderBottom: 1,
+												borderBottomWidth: 1,
 												borderColor: "#000",
 											}}
 										/>
