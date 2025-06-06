@@ -714,7 +714,7 @@ const QuotationPDF = () => {
 					}}
 				>
 					{approvalData.map((item, index) => (
-						<View
+						<View wrap={false}
 							key={index}
 							style={[
 								{ flex: 1 },
