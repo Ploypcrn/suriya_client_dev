@@ -514,7 +514,7 @@ const PageManage = () => {
                           rules={[
                             { required: true, message: "กรุณากรอกข้อมูล" },
                             {
-                              max: 100,
+                              max: 255,
                               message: "ขนาดความยาวไม่เกิน 100 ตัวอักษร",
                             },
                           ]}
@@ -589,7 +589,7 @@ const PageManage = () => {
                             { required: true, message: "กรุณากรอกข้อมูล" },
                             {
                               //ขนาดความยาวไม่เกิน 100 ตัวอักษร
-                              max: 100,
+                              max: 255,
                               message: "ขนาดความยาวไม่เกิน 100 ตัวอักษร",
                             },
                           ]}
@@ -610,7 +610,7 @@ const PageManage = () => {
                           rules={[
                             { required: true, message: "กรุณากรอกข้อมูล" },
                             {
-                              max: 100,
+                              max: 255,
                               message: "ขนาดความยาวไม่เกิน 100 ตัวอักษร",
                             },
                           ]}
