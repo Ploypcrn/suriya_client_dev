@@ -166,41 +166,42 @@ const ExpenseEdit = () => {
   };
 
 const removeRow = (index) => {
-  setData((prevData) => {
-    if (index < 0 || index >= prevData.length) {
-      console.warn("Invalid index for removal:", index);
-      return prevData;
-    }
+  const currentValues = form.getFieldValue("data") || [];
 
-    const newData = [...prevData];
-    const removedItem = newData[index];
-    newData.splice(index, 1);
+  if (index < 0 || index >= currentValues.length) {
+    console.warn("Invalid index for removal:", index);
+    return;
+  }
 
-    // Update form data
-    form.setFieldsValue({ data: newData });
+  const newData = [...currentValues];
+  const removedItem = newData[index];
+  newData.splice(index, 1);
 
-    // Push to deletedItems if applicable
-    if (removedItem?.id && removedItem.id !== 0) {
-      setDeletedItems((prev) => [...prev, removedItem]);
-    }
+  setData(newData);
+  form.setFieldsValue({ data: newData });
 
-    return newData;
-  });
+  if (removedItem?.id && removedItem.id !== 0) {
+    setDeletedItems((prev) => [...prev, removedItem]);
+  }
 };
 
 
-  const addNewRow = () => {
-    const newRow = {
-      id: 0,
-      expenseType: null,
-      expenseName: "",
-      amount: null,
-      expenseRemark: "",
-    };
-    const newData = [...data, newRow];
-    setData(newData);
-    form.setFieldsValue({ data: newData });
+
+const addNewRow = () => {
+  const currentValues = form.getFieldValue("data") || [];
+  const newRow = {
+    id: 0,
+    expenseType: null,
+    expenseName: "",
+    amount: null,
+    expenseRemark: "",
   };
+  const newData = [...currentValues, newRow];
+
+  setData(newData);
+  form.setFieldsValue({ data: newData });
+};
+
 
   const onConfirm = async (values) => {
     ShowConfirm(
