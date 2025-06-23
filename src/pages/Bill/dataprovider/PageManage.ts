@@ -78,6 +78,8 @@ export function usePageManage() {
         priceAfterDiscount: priceAfterDiscount,
         remaining: remaining,
         payExtra: submitData.payExtra,
+        billType : submitData.billType,
+        taxId : submitData.taxId
       };
     };
 
@@ -116,6 +118,8 @@ export function usePageManage() {
         payExtra: +dataBill.payextra || 0,
         remark: dataBill.remark,
         note: dataBill.note,
+        billType : dataBill.billtype,
+        taxId : dataBill.taxid
       });
     };
     console.log(form.getFieldsValue());
