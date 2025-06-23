@@ -13,6 +13,7 @@ function NotiAfterConfirm(type, title, subTitle) {
   notification[type]({
     icon: iconMap[type],
     message: <span className="bold-title">{title}</span>,
+    style:{fontFamily: 'Sarabun, sans-serif' },
     description: <span className="noti-text-description">{subTitle}</span>,
   });
 }
