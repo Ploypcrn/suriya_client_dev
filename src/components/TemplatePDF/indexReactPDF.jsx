@@ -8,6 +8,7 @@ import {
   PDFViewer,
   Image,
   Font,
+  PDFDownloadLink,
 } from "@react-pdf/renderer";
 import logo from "../../assets/logo_login.jpg"; // โลโก้บริษัท
 import { formatterPrice } from "../../utils/formatterPrice";
@@ -161,6 +162,7 @@ const QuotationPDF = () => {
       issuedate: loadData?.issuedate,
       status: textMap?.[loadData?.status],
       company_name: loadData?.company_name,
+      paymentname: loadData?.paymentname,
     },
     products: listProduct.map((product, i) => ({
       id: i,
@@ -204,7 +206,7 @@ const QuotationPDF = () => {
     customerInfoTableRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      paddingTop : 5
+      paddingTop: 5,
     },
     customerInfoTableCell: {
       width: "50%",
@@ -215,21 +217,22 @@ const QuotationPDF = () => {
       lineHeight: 0.9,
     },
     customerInfoTableCell1: {
-      width: "38%",
+      width: "37%",
       flexWrap: "wrap",
       // overflow: "hidden",
       textAlign: "left",
       paddingVertical: 2,
-      paddingRight : 2,
+      paddingRight: 2,
       lineHeight: 1,
     },
     customerInfoTableCell2: {
-      width: "24%",
+      width: "26%",
       flexWrap: "wrap",
       // overflow: "hidden",
       textAlign: "left",
       paddingVertical: 2,
       lineHeight: 1,
+      paddingRight: 0,
     },
     logo: {
       width: 80,
@@ -407,6 +410,14 @@ const QuotationPDF = () => {
               <Text style={{ fontWeight: "normal" }}>{data.bill.status}</Text>
             </Text>
           </Text>
+          <Text>
+            <Text style={{ fontWeight: "bold" }}>
+              วิธีการชำระเงิน:{" "}
+              <Text style={{ fontWeight: "normal" }}>
+                {data.bill.paymentname}
+              </Text>
+            </Text>
+          </Text>
         </View>
       </View>
     </View>
@@ -554,7 +565,7 @@ const QuotationPDF = () => {
         }}
       >
         <View style={styles.summaryContainer}>
-          <View style={{ flexDirection: "column", width : "50%"}}>
+          <View style={{ flexDirection: "column", width: "50%" }}>
             <Text style={{ fontWeight: "bold" }}>
               หมายเหตุ:{" "}
               <Text style={{ fontWeight: "normal" }}>
@@ -562,7 +573,7 @@ const QuotationPDF = () => {
               </Text>
             </Text>
           </View>
-          <View style={{ flexDirection: "column", width : "50%" }}>
+          <View style={{ flexDirection: "column", width: "50%" }}>
             {sum !== remaining && (
               <View
                 style={{
@@ -720,8 +731,24 @@ const QuotationPDF = () => {
           }}
         >
           <View style={{ width: "50%" }}></View>
-          <View style={{ width: "50%", display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Text style={{ width: "20%", fontWeight: "bold", flexDirection : "column", textAlign : "left", flex: 1, justifyContent: "center"}}>
+          <View
+            style={{
+              width: "50%",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                width: "20%",
+                fontWeight: "bold",
+                flexDirection: "column",
+                textAlign: "left",
+                flex: 1,
+                justifyContent: "center",
+              }}
+            >
               {id === "1" && "รวมเป็นเงินทั้งสิ้น"}
               {id === "2" && "ยอดที่ต้องชำระ"}
               {id === "3" && "รวมเป็นเงินทั้งสิ้น"}
@@ -731,7 +758,8 @@ const QuotationPDF = () => {
             <View
               style={{
                 width: "80%",
-                flexDirection : "column", textAlign : "right"
+                flexDirection: "column",
+                textAlign: "right",
               }}
             >
               <Text style={{ fontWeight: "bold" }}>
@@ -815,58 +843,183 @@ const QuotationPDF = () => {
     );
   };
 
+  const SubFooter = () => {
+    return (
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          backgroundColor: "#eee",
+          padding: 5,
+          marginTop: "auto",
+        }}
+      >
+        {/* ซ้าย: หมายเหตุ */}
+        <View style={{ width: "50%" }}>
+          <Text style={{ fontWeight: "bold" }}>
+            หมายเหตุ:{" "}
+            <Text style={{ fontWeight: "normal" }}>
+              {loadData?.remark || "-"}
+            </Text>
+          </Text>
+        </View>
+
+        {/* ขวา: รายการราคา */}
+        <View
+          style={{
+            width: "50%",
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+          }}
+        >
+          {/* ราคารวม */}
+          {sum !== remaining && (
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ width: "50%", justifyContent: "center" }}>
+                <Text style={{ fontWeight: "bold", textAlign: "left" }}>
+                  ราคารวม:
+                </Text>
+              </View>
+              <View style={{ width: "50%", justifyContent: "flex-end" }}>
+                <Text style={{ fontWeight: "bold", textAlign: "right" }}>
+                  {formatterPrice(sum)}
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* ส่วนลด */}
+          {discount && discount > 0 && !["3", "4", "5"].includes(id) && (
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ width: "50%" }}>
+                <Text style={{ fontWeight: "bold", textAlign: "left" }}>
+                  ส่วนลด:
+                </Text>
+              </View>
+              <View style={{ width: "50%" }}>
+                <Text style={{ fontWeight: "bold", textAlign: "right" }}>
+                  {formatterPrice(discount)}
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* มัดจำ */}
+          {deposit && deposit > 0 && !["3", "4", "5"].includes(id) && (
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ width: "50%" }}>
+                <Text style={{ fontWeight: "bold", textAlign: "left" }}>
+                  มัดจำ:
+                </Text>
+              </View>
+              <View style={{ width: "50%" }}>
+                <Text style={{ fontWeight: "bold", textAlign: "right" }}>
+                  {formatterPrice(deposit)}
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* ยอดที่ต้องชำระ / ราคารวมสุทธิ */}
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ width: "50%" }}>
+              <Text style={{ fontWeight: "bold", textAlign: "left" }}>
+                {["2", "3", "4", "5"].includes(id)
+                  ? "ยอดที่ต้องชำระ"
+                  : "ราคารวมสุทธิ"}
+              </Text>
+            </View>
+            <View style={{ width: "50%" }}>
+              <Text style={{ fontWeight: "bold", textAlign: "right" }}>
+                {formatterPrice(
+                  ["3", "4", "5"].includes(id)
+                    ? 0
+                    : id === "1"
+                    ? priceAfterDiscount
+                    : remaining
+                )}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   const chunkedProducts = [];
   for (let i = 0; i < data.products.length; i += 10) {
     chunkedProducts.push(data.products.slice(i, i + 10));
   }
 
+  const SuriyaPDF = () => (
+    <Document>
+      <>
+        {chunkedProducts.map((products, pageIndex) => (
+          <Page key={pageIndex} size="A4" style={styles.page}>
+            <>
+              <Header />
+              <View style={[styles.customerInfoTableHeaderRow]}>
+                <Text
+                  style={[
+                    styles.customerInfoTableCell,
+                    {
+                      fontWeight: "bold",
+                    },
+                  ]}
+                >
+                  ข้อมูลลูกค้า
+                </Text>
+                <Text
+                  style={[
+                    styles.customerInfoTableCell,
+                    {
+                      textAlign: "right",
+                    },
+                  ]}
+                >
+                  {data.bill.issuedate} Page {pageIndex + 1}/
+                  {chunkedProducts.length}
+                </Text>
+              </View>
+
+              <CustomerInfo />
+
+              <ProductTable
+                products={products}
+                startProductIndex={pageIndex === 0 ? undefined : pageIndex * 10}
+              />
+              {pageIndex != chunkedProducts.length - 1 && <SubFooter />}
+              {pageIndex == chunkedProducts.length - 1 && <Footer />}
+            </>
+          </Page>
+        ))}
+      </>
+    </Document>
+  );
+
   return (
-    <PDFViewer width="100%" height="1200px">
-      <Document>
-        <>
-          {chunkedProducts.map((products, pageIndex) => (
-            <Page key={pageIndex} size="A4" style={styles.page}>
-              <>
-                <Header />
-                <View style={[styles.customerInfoTableHeaderRow]}>
-                  <Text
-                    style={[
-                      styles.customerInfoTableCell,
-                      {
-                        fontWeight: "bold",
-                      },
-                    ]}
-                  >
-                    ข้อมูลลูกค้า
-                  </Text>
-                  <Text
-                    style={[
-                      styles.customerInfoTableCell,
-                      {
-                        textAlign: "right",
-                      },
-                    ]}
-                  >
-                    {data.bill.issuedate} Page {pageIndex + 1}/
-                    {chunkedProducts.length}
-                  </Text>
-                </View>
-
-                <CustomerInfo />
-
-                <ProductTable
-                  products={products}
-                  startProductIndex={
-                    pageIndex === 0 ? undefined : pageIndex * 10
-                  }
-                />
-                {pageIndex == chunkedProducts.length - 1 && <Footer />}
-              </>
-            </Page>
-          ))}
-        </>
-      </Document>
-    </PDFViewer>
+    <>
+      <div style={{ float: "right", marginTop: -20, paddingBottom : 10 }}>
+        <PDFDownloadLink
+          document={<SuriyaPDF />}
+          fileName={`${data.bill.billno}.pdf`}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#1890ff",
+            color: "white",
+            borderRadius: 4,
+            textDecoration: "none",
+            cursor: "pointer",
+          }}
+        >
+          {({ loading }) => (loading ? "กำลังสร้าง PDF..." : "ดาวน์โหลด PDF")}
+        </PDFDownloadLink>
+      </div>
+      <PDFViewer width="100%" height="1200px">
+        <SuriyaPDF />
+      </PDFViewer>
+    </>
   );
 };
 
