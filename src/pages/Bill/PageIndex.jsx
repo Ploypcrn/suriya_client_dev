@@ -142,7 +142,7 @@ const PageIndex = () => {
               icon={<CheckCircleOutlined />}
             />
           )}
-         
+
           <Button
             style={{ marginRight: "10px" }}
             className="btn-print"
@@ -155,6 +155,7 @@ const PageIndex = () => {
             }}
             icon={<FilePdfOutlined />}
           />
+
           <Button
             style={{ marginRight: "10px" }}
             className="btn-edit"
@@ -164,14 +165,16 @@ const PageIndex = () => {
             }}
             icon={<EditOutlined />}
           />
-          <Button
-            className="btn-delete"
-            type="link"
-            onClick={() => {
-              onClickDelete(record.billid);
-            }}
-            icon={<DeleteOutlined />}
-          />
+          {record.status != 1 && (
+            <Button
+              className="btn-delete"
+              type="link"
+              onClick={() => {
+                onClickDelete(record.billid);
+              }}
+              icon={<DeleteOutlined />}
+            />
+          )}
         </span>
       ),
     },
@@ -209,23 +212,23 @@ const PageIndex = () => {
     );
   };
 
-    const onClickFullPayment = async (values) => {
-      const cf = await ShowConfirm(
-        "ยืนยันการบันทึกชำระครบแล้ว",
-        "คุณต้องการบันทึกชำระครบแล้ว รายการนี้ใช่หรือไม่ ?"
-      );
-      if (!cf) return;
+  const onClickFullPayment = async (values) => {
+    const cf = await ShowConfirm(
+      "ยืนยันการบันทึกชำระครบแล้ว",
+      "คุณต้องการบันทึกชำระครบแล้ว รายการนี้ใช่หรือไม่ ?"
+    );
+    if (!cf) return;
 
-      await pageIndexDataProvider.fullPaymentBillAsync(values);
-      await pageIndexDataProvider.TableManager.loadTableData(
-        form.getFieldsValue()
-      );
+    await pageIndexDataProvider.fullPaymentBillAsync(values);
+    await pageIndexDataProvider.TableManager.loadTableData(
+      form.getFieldsValue()
+    );
   };
 
   const initialValues = {
     status: "0",
     type: "0",
-    dateRange: [dayjs(`01-01-${dayjs().year()}`, 'DD-MM-YYYY'), dayjs()],
+    dateRange: [dayjs(`01-01-${dayjs().year()}`, "DD-MM-YYYY"), dayjs()],
   };
 
   useEffect(() => {
@@ -332,7 +335,7 @@ const PageIndex = () => {
                         span={10}
                         style={{
                           borderRight: "1px solid #000",
-                          paddingRight: 10
+                          paddingRight: 10,
                         }}
                       >
                         <div style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
@@ -347,7 +350,7 @@ const PageIndex = () => {
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
-							fontSize : "1rem"
+                            fontSize: "1rem",
                           }}
                         >
                           <span>ยอดรับ</span>
@@ -359,7 +362,7 @@ const PageIndex = () => {
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
-							fontSize : "1rem"
+                            fontSize: "1rem",
                           }}
                         >
                           <span>ยอดส่วนลด</span>
@@ -371,7 +374,7 @@ const PageIndex = () => {
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
-							fontSize : "1rem"
+                            fontSize: "1rem",
                           }}
                         >
                           <span>ยอดรับจริง</span>
@@ -403,7 +406,7 @@ const PageIndex = () => {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
-						fontSize : "1rem"
+                        fontSize: "1rem",
                       }}
                     >
                       <span>จำนวนบิล</span>
@@ -415,7 +418,7 @@ const PageIndex = () => {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
-						fontSize : "1rem"
+                        fontSize: "1rem",
                       }}
                     >
                       <span>จำนวนเงิน</span>
@@ -445,7 +448,7 @@ const PageIndex = () => {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
-						fontSize : "1rem"
+                        fontSize: "1rem",
                       }}
                     >
                       <span>จำนวนบิล</span>
@@ -457,7 +460,7 @@ const PageIndex = () => {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
-						fontSize : "1rem"
+                        fontSize: "1rem",
                       }}
                     >
                       <span>จำนวนเงิน</span>
