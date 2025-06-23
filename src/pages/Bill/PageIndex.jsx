@@ -4,6 +4,7 @@ import {
   PlusOutlined,
   FilePdfOutlined,
   EditOutlined,
+  CheckCircleOutlined,
   DeleteOutlined,
   BorderLeftOutlined,
 } from "@ant-design/icons";
@@ -130,6 +131,18 @@ const PageIndex = () => {
       align: "center",
       render: (text, record) => (
         <span>
+          {record.status == 2 && (
+            <Button
+              style={{ marginRight: "10px" }}
+              className="btn-edit"
+              type="link"
+              onClick={() => {
+                onClickFullPayment(record.billid);
+              }}
+              icon={<CheckCircleOutlined />}
+            />
+          )}
+         
           <Button
             style={{ marginRight: "10px" }}
             className="btn-print"
@@ -196,10 +209,23 @@ const PageIndex = () => {
     );
   };
 
+    const onClickFullPayment = async (values) => {
+      const cf = await ShowConfirm(
+        "ยืนยันการบันทึกชำระครบแล้ว",
+        "คุณต้องการบันทึกชำระครบแล้ว รายการนี้ใช่หรือไม่ ?"
+      );
+      if (!cf) return;
+
+      await pageIndexDataProvider.fullPaymentBillAsync(values);
+      await pageIndexDataProvider.TableManager.loadTableData(
+        form.getFieldsValue()
+      );
+  };
+
   const initialValues = {
     status: "0",
     type: "0",
-    dateRange: [dayjs().subtract(3, "years"), dayjs()],
+    dateRange: [dayjs(`01-01-${dayjs().year()}`, 'DD-MM-YYYY'), dayjs()],
   };
 
   useEffect(() => {
