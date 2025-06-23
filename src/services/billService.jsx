@@ -119,6 +119,18 @@ const deleteBill = async (id) => {
     }
 }
 
+const fullPaymentBill = async (id) => {
+    try {
+        const response = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/api/v1/bill/fullPaymentBill/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("An error occurred while fullPaymentBill :", error);
+        throw error;
+    }
+}
+
+
+
 const deleteListProductByInvoiceId = async (id) => {
     try {
         const response = await axios.delete(`${import.meta.env.VITE_BASE_API_URL}/api/v1/bill/deleteListProductByInvoiceId/${id}`);
@@ -149,6 +161,7 @@ export default {
     createListProduct,
     updateBill,
     updateBillFreeText,
+    fullPaymentBill,
     deleteBill,
     deleteListProductByInvoiceId,
     deleteProductById,
