@@ -45,9 +45,31 @@ const PageManage = () => {
   const router = Router;
   const { id } = useParams();
   const isEditMode = !!id;
+ 
   //เช็คว่ามี params :id หรือไม่
-
   const pageManageDataProvider = usePageManage();
+  
+  const billType = Form.useWatch("billType", pageManageDataProvider.FormManager.form);
+  const [taxLabel, setTaxLabel] = useState("");
+  const [taxPlaceholder, setTaxPlaceholder] = useState("");
+
+  useEffect(() => {
+    if (billType === 1) {
+      setTaxLabel("เลขบัตรประชาชน");
+      setTaxPlaceholder("กรอกเลขบัตรประชาชน");
+    } else if (billType === 2) {
+      setTaxLabel("เลขทะเบียนนิติบุคคล");
+      setTaxPlaceholder("กรอกเลขทะเบียนนิติบุคคล");
+    } else {
+      setTaxLabel("");
+      setTaxPlaceholder("");
+    }
+  }, [billType]);
+
+  const handleBillTypeChange = (value) => {
+    // reset ค่า taxId ทุกครั้งที่เปลี่ยน
+    pageManageDataProvider.FormManager.form.setFieldsValue({ taxId: undefined });
+  };
 
   const columns = [
     {
@@ -505,6 +527,35 @@ const PageManage = () => {
                             placeholder="กรอกเบอร์โทรศัพท์"
                           />
                         </Form.Item>
+
+                        <Form.Item
+                          label="ออกบิลในนาม"
+                          name="billType"
+                          wrapperCol={{ span: 24 }}
+                        >
+                          <Select placeholder="เลือกประเภทการออกบิล" style={{ width: "100%" }} onChange={handleBillTypeChange}>
+                            <Select.Option value={0}>ไม่ระบุ</Select.Option>
+                            <Select.Option value={1}>บุคคลธรรมดา</Select.Option>
+                            <Select.Option value={2}>นิติบุคคล</Select.Option>
+                          </Select>
+                      </Form.Item>
+
+ {billType > 0 ? (
+                        <Form.Item
+                          label={taxLabel}
+                          labelCol={{ span: 24 }}
+                          name="taxId"
+                          wrapperCol={{ span: 24 }}
+                          rules={[
+                            { required: true, message: "กรุณากรอกข้อมูล" },
+                          ]}
+                        >
+                          <Input
+                            placeholder={taxPlaceholder}
+                            style={{ width: "100%" }}
+                          />
+                        </Form.Item>
+) : null}
                       </Col>
 
                       <Col span={12}>
@@ -527,6 +578,7 @@ const PageManage = () => {
                           />
                         </Form.Item>
                       </Col>
+
                     </Row>
                   </Card>
                 </Col>
