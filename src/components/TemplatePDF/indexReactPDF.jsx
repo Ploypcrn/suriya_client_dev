@@ -204,6 +204,7 @@ const QuotationPDF = () => {
     customerInfoTableRow: {
       flexDirection: "row",
       flexWrap: "wrap",
+      paddingTop : 5
     },
     customerInfoTableCell: {
       width: "50%",
@@ -219,7 +220,8 @@ const QuotationPDF = () => {
       // overflow: "hidden",
       textAlign: "left",
       paddingVertical: 2,
-      lineHeight: 0.9,
+      paddingRight : 2,
+      lineHeight: 1,
     },
     customerInfoTableCell2: {
       width: "24%",
@@ -227,7 +229,7 @@ const QuotationPDF = () => {
       // overflow: "hidden",
       textAlign: "left",
       paddingVertical: 2,
-      lineHeight: 0.9,
+      lineHeight: 1,
     },
     logo: {
       width: 80,
@@ -332,126 +334,74 @@ const QuotationPDF = () => {
 
   const CustomerInfo = () => (
     <View style={styles.customerInfoContainer}>
-      <View style={[styles.customerInfoTableRow, { paddingTop: 3 }]}>
-        <Text
-          style={[
-            styles.customerInfoTableCell1,
-            {
-              fontWeight: "bold",
-            },
-          ]}
-        >
-          ชื่อผู้เสียชีวิต:{" "}
-          <Text style={{ fontWeight: "normal" }}>{data.customer.name}</Text>
-        </Text>
-        <View style={[styles.customerInfoTableRow]}>
-          <Text
-            style={[
-              styles.customerInfoTableCell1,
-              {
-                fontWeight: "bold",
-              },
-            ]}
-          >
+      <View style={[styles.customerInfoTableRow, { fontWeight: "bold" }]}>
+        <View style={[styles.customerInfoTableCell1]}>
+          <Text>
+            ชื่อผู้เสียชีวิต:{" "}
+            <Text style={{ fontWeight: "normal" }}>{data.customer.name}</Text>
+          </Text>
+          <Text>
+            ชื่อผู้ติดต่อ:{" "}
+            <Text style={{ fontWeight: "normal" }}>
+              {data.customer.contact}
+            </Text>
+          </Text>
+          <Text>
+            ที่อยู่:{" "}
+            <Text style={{ fontWeight: "normal" }}>
+              {data.customer.address}
+            </Text>
+          </Text>
+          <Text>
+            เบอร์โทรศัพท์:{" "}
+            <Text style={{ fontWeight: "normal" }}>{data.customer.phone}</Text>
+          </Text>
+          {data.customer.billType && (
+            <Text>
+              {data.customer.billType == 1
+                ? "เลขบัตรประชาชน"
+                : "เลขทะเบียนนิติบุคคล"}
+              :{" "}
+              <Text style={{ fontWeight: "normal" }}>
+                {data.customer.taxId}
+              </Text>
+            </Text>
+          )}
+        </View>
+        <View style={[styles.customerInfoTableCell1]}>
+          <Text>
             ที่อยู่ไปรับ:{" "}
             <Text style={{ fontWeight: "normal" }}>{data.customer.name}</Text>
           </Text>
-        </View>
-        <View style={[styles.customerInfoTableRow]}>
-          <Text
-            style={[
-              styles.customerInfoTableCell2,
-              {
-                fontWeight: "bold",
-              },
-            ]}
-          >
-            ออกบิลโดย:{" "}
-            <Text style={{ fontWeight: "normal" }}>{data.bill.billuser}</Text>
-          </Text>
-        </View>
-      </View>
-      <View style={[styles.customerInfoTableRow]}>
-        <Text
-          style={[
-            styles.customerInfoTableCell1,
-            {
-              fontWeight: "bold",
-            },
-          ]}
-        >
-          ชื่อผู้ติดต่อ:{" "}
-          <Text style={{ fontWeight: "normal" }}>{data.customer.contact}</Text>
-        </Text>
-        <View style={[styles.customerInfoTableRow]}>
-          <Text
-            style={[
-              styles.customerInfoTableCell1,
-              {
-                fontWeight: "bold",
-              },
-            ]}
-          >
+          <Text>
             วัน/เวลาที่รับ:{" "}
             <Text style={{ fontWeight: "normal" }}>
               {data.customer.receivedate}
             </Text>
           </Text>
-        </View>
-        <View style={[styles.customerInfoTableRow]}>
-          <Text
-            style={[
-              styles.customerInfoTableCell2,
-              {
-                fontWeight: "bold",
-              },
-            ]}
-          >
-            ประเภทบิล:{" "}
-            <Text style={{ fontWeight: "normal" }}>
-              {data.bill.company_name}
-            </Text>
-          </Text>
-        </View>
-      </View>
-      <View style={[styles.customerInfoTableRow]}>
-        <Text
-          style={[
-            styles.customerInfoTableCell1,
-            {
-              fontWeight: "bold",
-            },
-          ]}
-        >
-          ที่อยู่:{" "}
-          <Text style={{ fontWeight: "normal" }}>{data.customer.address}</Text>
-        </Text>
-        <View
-          style={[
-            styles.customerInfoTableCell1,
-            {
-              display: "flex",
-              flexDirection: "column",
-              fontWeight: "bold",
-            },
-          ]}
-        >
           <Text>
             รับจาก:{" "}
             <Text style={{ fontWeight: "normal" }}>
               {data.customer.receiveFrom}
             </Text>
           </Text>
+          <Text>
+            สถานที่จัดส่ง:{" "}
+            <Text style={{ fontWeight: "normal" }}>{data.customer.send}</Text>
+          </Text>
         </View>
-        <View style={[styles.customerInfoTableRow]}>
-          <Text
-            style={[
-              styles.customerInfoTableCell2,
-              {
-                fontWeight: "bold",
-              },
-            ]}
-          >
+        <View style={[styles.customerInfoTableCell2]}>
+          <Text>
+            ออกบิลโดย:{" "}
+            <Text style={{ fontWeight: "normal" }}>{data.bill.billuser}</Text>
+          </Text>
+          <Text>
+            ประเภทบิล:{" "}
+            <Text style={{ fontWeight: "normal" }}>
+              {data.bill.company_name}
+            </Text>
+          </Text>
+          <Text>
             <Text style={{ fontWeight: "bold" }}>
               สถานะการจ่าย:{" "}
               <Text style={{ fontWeight: "normal" }}>{data.bill.status}</Text>
@@ -459,57 +409,6 @@ const QuotationPDF = () => {
           </Text>
         </View>
       </View>
-      <View style={[styles.customerInfoTableRow]}>
-        <Text
-          style={[
-            styles.customerInfoTableCell1,
-            {
-              fontWeight: "bold",
-            },
-          ]}
-        >
-          เบอร์โทรศัพท์:{" "}
-          <Text style={{ fontWeight: "normal" }}>{data.customer.phone}</Text>
-        </Text>
-        <View
-          style={[
-            styles.customerInfoTableCell1,
-            {
-              display: "flex",
-              flexDirection: "column",
-              fontWeight: "bold",
-            },
-          ]}
-        >
-          <Text>
-            สถานที่จัดส่ง:{" "}
-            <Text style={{ fontWeight: "normal" }}>{data.customer.send}</Text>
-          </Text>
-        </View>
-      </View>
-      {data.customer.billType && (
-        <View style={[styles.customerInfoTableRow]}>
-          <Text style={[styles.customerInfoTableCell1, { fontWeight: "bold" }]}>
-            {data.customer.billType == 1
-              ? "เลขบัตรประชาชน"
-              : "เลขทะเบียนนิติบุคคล"}
-            :{" "}
-            <Text style={{ fontWeight: "normal" }}>{data.customer.taxId}</Text>
-          </Text>
-
-          {/* <View
-        style={[
-          styles.customerInfoTableCell,
-          {
-            display: "flex",
-            flexDirection: "column",
-          },
-        ]}
-      >
-        <Text style={{ fontWeight : "normal"}}>เลขทะเบียนนิติบุคคล: {data.taxId}</Text>
-      </View> */}
-        </View>
-      )}
     </View>
   );
 
