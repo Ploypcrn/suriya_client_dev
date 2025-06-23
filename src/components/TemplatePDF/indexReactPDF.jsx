@@ -554,7 +554,7 @@ const QuotationPDF = () => {
         }}
       >
         <View style={styles.summaryContainer}>
-          <View>
+          <View style={{ flexDirection: "column", width : "50%"}}>
             <Text style={{ fontWeight: "bold" }}>
               หมายเหตุ:{" "}
               <Text style={{ fontWeight: "normal" }}>
@@ -562,7 +562,7 @@ const QuotationPDF = () => {
               </Text>
             </Text>
           </View>
-          <View style={{ flexDirection: "column" }}>
+          <View style={{ flexDirection: "column", width : "50%" }}>
             {sum !== remaining && (
               <View
                 style={{
@@ -719,34 +719,36 @@ const QuotationPDF = () => {
             padding: 5,
           }}
         >
-          <Text style={{ fontWeight: "bold" }}>
-            {id === "1" && "รวมเป็นเงินทั้งสิ้น"}
-            {id === "2" && "ยอดที่ต้องชำระ"}
-            {id === "3" && "รวมเป็นเงินทั้งสิ้น"}
-            {id === "4" && "รวมเป็นเงินทั้งสิ้น"}
-            {id === "5" && "รวมเป็นเงินทั้งสิ้น"}
-          </Text>
-          <View
-            style={{
-              flexDirection: "column",
-              display: "flex",
-              alignItems: "flex-end",
-            }}
-          >
-            <Text style={{ fontWeight: "bold" }}>
-              {id === "1" && formatterPrice(priceAfterDiscount)}
-              {id === "2" && formatterPrice(remaining)}
-              {id === "3" && formatterPrice(sum)}
-              {id === "4" && formatterPrice(+vat + +sum)}
-              {id === "5" && formatterPrice(sum)}
+          <View style={{ width: "50%" }}></View>
+          <View style={{ width: "50%", display: "flex", flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ width: "20%", fontWeight: "bold", flexDirection : "column", textAlign : "left", flex: 1, justifyContent: "center"}}>
+              {id === "1" && "รวมเป็นเงินทั้งสิ้น"}
+              {id === "2" && "ยอดที่ต้องชำระ"}
+              {id === "3" && "รวมเป็นเงินทั้งสิ้น"}
+              {id === "4" && "รวมเป็นเงินทั้งสิ้น"}
+              {id === "5" && "รวมเป็นเงินทั้งสิ้น"}
             </Text>
-            <Text style={{ fontWeight: "bold" }}>
-              {id === "1" && bahttext(priceAfterDiscount)}
-              {id === "2" && bahttext(remaining)}
-              {id === "3" && bahttext(sum)}
-              {id === "4" && bahttext(+vat + +sum)}
-              {id === "5" && bahttext(sum)}
-            </Text>
+            <View
+              style={{
+                width: "80%",
+                flexDirection : "column", textAlign : "right"
+              }}
+            >
+              <Text style={{ fontWeight: "bold" }}>
+                {id === "1" && formatterPrice(priceAfterDiscount)}
+                {id === "2" && formatterPrice(remaining)}
+                {id === "3" && formatterPrice(sum)}
+                {id === "4" && formatterPrice(+vat + +sum)}
+                {id === "5" && formatterPrice(sum)}
+              </Text>
+              <Text style={{ fontWeight: "bold" }}>
+                {id === "1" && bahttext(priceAfterDiscount)}
+                {id === "2" && bahttext(remaining)}
+                {id === "3" && bahttext(sum)}
+                {id === "4" && bahttext(+vat + +sum)}
+                {id === "5" && bahttext(sum)}
+              </Text>
+            </View>
           </View>
         </View>
         {/* <View style={{ borderBottomWidth: 1, borderColor: "#000" }} /> */}
