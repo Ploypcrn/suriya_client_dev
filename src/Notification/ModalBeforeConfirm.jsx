@@ -9,6 +9,7 @@ const ShowConfirm = (title, content) => {
       content: content,
       okText: "ตกลง",
       cancelText: "ยกเลิก",
+      style: { fontFamily: 'Sarabun, sans-serif' },
       onOk() {
         resolve(true); 
       },
