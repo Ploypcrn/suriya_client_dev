@@ -97,10 +97,24 @@ export function usePageIndex() {
     }
   };
 
+  const fullPaymentBillAsync = async (billid) => {
+    try {
+      const response = await billService.fullPaymentBill(billid);
+      if (response.data) {
+        NotiAfterConfirm("success", "บันทึกชำระครบแล้วข้อมูลสำเร็จ", "บันทึกชำระครบแล้วข้อมูลสำเร็จ");
+      } else {
+        NotiAfterConfirm("error", "บันทึกชำระครบแล้วข้อมูลไม่สำเร็จ", "บันทึกชำระครบแล้วข้อมูลไม่สำเร็จ");
+      }
+    } catch (error) {
+      NotiAfterConfirm("error", "บันทึกชำระครบแล้วข้อมูลไม่สำเร็จ", "บันทึกชำระครบแล้วข้อมูลไม่สำเร็จ");
+    }
+  };
+
   return {
     ModalPrintListPDFManager,
     TableManager,
     deleteBillAsync,
+    fullPaymentBillAsync,
     status: [
       {
         id: "0",
