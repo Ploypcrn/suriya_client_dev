@@ -312,14 +312,14 @@ const PageManage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 page-manage-container px-5 pl-5"> {/* Add a class for global styles */}
       <Topbar
         leftSlot={
           <>
             <Button
               className="btn-back"
               type="link"
-              style={{ fontSize: "20px" }}
+              style={{ fontSize: "20px" }} // Consider changing to rem or adjusting via CSS
               icon={<ArrowLeftOutlined style={{ fontSize: "20px" }} />}
               onClick={() => {
                 navigate("/bill");
@@ -389,17 +389,18 @@ const PageManage = () => {
           <Input />
         </Form.Item>
         <Row
-          gutter={24}
-          style={{ padding: "0px 25px", justifyContent: "center" }}
+          justify="center"
+          className="form-main-row" // Add a class for media queries
         >
-          <Col span={16}>
+          <Col xs={24} sm={24} md={16} lg={16} xl={16} xxl={16}> {/* Main content area */}
             <CardWrapper>
               <Card headingIcon={<FileTextOutlined />} headingText="ข้อมูลบิล">
-                <Row gutter={12}>
-                  <Col span={6}>
+                <Row gutter={[12, 12]}> {/* Responsive gutter */}
+                  <Col xs={24} sm={12} md={8} lg={6}> {/* Adjust spans for smaller screens */}
                     <Form.Item
                       label="เล่มที่"
                       name="bookNo"
+                      labelCol={{ span: 24 }}
                       wrapperCol={{ span: 24 }}
                     >
                       <Input
@@ -410,11 +411,12 @@ const PageManage = () => {
                     </Form.Item>
                   </Col>
                   {isEditMode && (
-                    <Col span={6}>
+                    <Col xs={24} sm={12} md={8} lg={6}>
                       <Form.Item
                         style={{ width: "100%" }}
                         label="เลขที่บิล"
                         name="billNo"
+                        labelCol={{ span: 24 }}
                         wrapperCol={{ span: 24 }}
                       >
                         <Input
@@ -425,13 +427,12 @@ const PageManage = () => {
                       </Form.Item>
                     </Col>
                   )}
-
-                  <Col span={6}>
+                  <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       label="วันที่ออกบิล"
                       name="issueDate"
-                      wrapperCol={{ span: 24 }}
                       labelCol={{ span: 24 }}
+                      wrapperCol={{ span: 24 }}
                       className="flex-grow"
                       required
                       rules={[{ required: true, message: "กรุณากรอกข้อมูล" }]}
@@ -454,10 +455,11 @@ const PageManage = () => {
                       />
                     </Form.Item>
                   </Col>
-                  <Col span={6}>
+                  <Col xs={24} sm={12} md={8} lg={6}>
                     <Form.Item
                       label="เวลา"
                       name="issueTime"
+                      labelCol={{ span: 24 }}
                       wrapperCol={{ span: 24 }}
                       className="flex-grow"
                     >
@@ -473,21 +475,19 @@ const PageManage = () => {
                       />
                     </Form.Item>
                   </Col>
-                  <Col span={12} />
+                  {/* <Col span={12} /> // This empty column might be removed or adjusted for responsiveness */}
                 </Row>
               </Card>
+              <Row xs={24} sm={24} md={16} lg={16} xl={16} xxl={16}>
 
-              <Row gutter={24}>
-                <Col span={14}>
-                  <Card
-                    headingText="ข้อมูลทั่วไป"
-                    headingIcon={<UserOutlined />}
-                  >
-                    <Row gutter={24}>
-                      <Col span={12}>
+                <Col xs={24} sm={24} md={12} lg={12}>
+                  <Card headingText="ข้อมูลทั่วไป" headingIcon={<UserOutlined />}>
+                    <Row gutter={[24, 24]}>
+                      <Col xs={24} sm={12}>
                         <Form.Item
                           label="ชื่อผู้เสียชีวิต"
                           name="deceased"
+                          labelCol={{ span: 24 }}
                           wrapperCol={{ span: 24 }}
                           rules={[
                             { required: true, message: "กรุณากรอกข้อมูล" },
@@ -497,10 +497,11 @@ const PageManage = () => {
                         </Form.Item>
                       </Col>
 
-                      <Col span={12}>
+                      <Col xs={24} sm={12}>
                         <Form.Item
                           label="ชื่อผู้ติดต่อได้"
                           name="contact"
+                          labelCol={{ span: 24 }}
                           wrapperCol={{ span: 24 }}
                           rules={[
                             { required: true, message: "กรุณากรอกข้อมูล" },
@@ -513,7 +514,7 @@ const PageManage = () => {
                         </Form.Item>
                       </Col>
 
-                      <Col span={12}>
+                      <Col xs={24} sm={12}>
                         <Form.Item
                           label="เบอร์โทรศัพท์"
                           name="phone"
@@ -521,6 +522,7 @@ const PageManage = () => {
                             { required: true, message: "กรุณากรอกข้อมูล" },
                           ]}
                           wrapperCol={{ span: 24 }}
+                          labelCol={{ span: 24 }}
                         >
                           <PhoneInput
                             style={{ width: "100%" }}
@@ -532,33 +534,38 @@ const PageManage = () => {
                           label="ออกบิลในนาม"
                           name="billType"
                           wrapperCol={{ span: 24 }}
+                          labelCol={{ span: 24 }}
                         >
-                          <Select placeholder="เลือกประเภทการออกบิล" style={{ width: "100%" }} onChange={handleBillTypeChange}>
+                          <Select
+                            placeholder="เลือกประเภทการออกบิล"
+                            style={{ width: "100%" }}
+                            onChange={handleBillTypeChange}
+                          >
                             <Select.Option value={0}>ไม่ระบุ</Select.Option>
                             <Select.Option value={1}>บุคคลธรรมดา</Select.Option>
                             <Select.Option value={2}>นิติบุคคล</Select.Option>
                           </Select>
-                      </Form.Item>
-
- {billType > 0 ? (
-                        <Form.Item
-                          label={taxLabel}
-                          labelCol={{ span: 24 }}
-                          name="taxId"
-                          wrapperCol={{ span: 24 }}
-                          rules={[
-                            { required: true, message: "กรุณากรอกข้อมูล" },
-                          ]}
-                        >
-                          <Input
-                            placeholder={taxPlaceholder}
-                            style={{ width: "100%" }}
-                          />
                         </Form.Item>
-) : null}
+
+                        {billType > 0 ? (
+                          <Form.Item
+                            label={taxLabel}
+                            labelCol={{ span: 24 }}
+                            name="taxId"
+                            wrapperCol={{ span: 24 }}
+                            rules={[
+                              { required: true, message: "กรุณากรอกข้อมูล" },
+                            ]}
+                          >
+                            <Input
+                              placeholder={taxPlaceholder}
+                              style={{ width: "100%" }}
+                            />
+                          </Form.Item>
+                        ) : null}
                       </Col>
 
-                      <Col span={12}>
+                      <Col xs={24} sm={12}>
                         <Form.Item
                           label="ที่อยู่"
                           name="address"
@@ -570,6 +577,7 @@ const PageManage = () => {
                             },
                           ]}
                           wrapperCol={{ span: 24 }}
+                          labelCol={{ span: 24 }}
                         >
                           <Input.TextArea
                             placeholder="กรอกที่อยู่"
@@ -578,23 +586,23 @@ const PageManage = () => {
                           />
                         </Form.Item>
                       </Col>
-
                     </Row>
                   </Card>
                 </Col>
 
-                <Col span={10}>
+                <Col xs={24} sm={24} md={12} lg={12} className="pl-5">
                   <Card
                     headingIcon={<EnvironmentOutlined />}
                     headingText="ข้อมูลที่อยู่"
                   >
-                    <Row gutter={24}>
-                      <Col span={12}>
+                    <Row gutter={[24, 24]}>
+                      <Col xs={24} sm={12}>
                         <Form.Item
                           label="วันที่รับ"
                           name="receiveDate"
                           className="flex-grow"
                           wrapperCol={{ span: 24 }}
+                          labelCol={{ span: 24 }}
                         >
                           <PickerWithType
                             type="date"
@@ -614,12 +622,13 @@ const PageManage = () => {
                           />
                         </Form.Item>
                       </Col>
-                      <Col span={12}>
+                      <Col xs={24} sm={12}>
                         <Form.Item
                           label="เวลา"
                           name="receiveTime"
                           className="flex-grow"
                           wrapperCol={{ span: 24 }}
+                          labelCol={{ span: 24 }}
                         >
                           <Input
                             placeholder="กรอกเวลา"
@@ -633,29 +642,29 @@ const PageManage = () => {
                           />
                         </Form.Item>
                       </Col>
-                      <Col span={12}>
+                      <Col xs={24} sm={12}>
                         <Form.Item
                           label="รับจาก"
                           name="receiveFrom"
                           rules={[
                             { required: true, message: "กรุณากรอกข้อมูล" },
                             {
-                              //ขนาดความยาวไม่เกิน 100 ตัวอักษร
                               max: 255,
                               message: "ขนาดความยาวไม่เกิน 100 ตัวอักษร",
                             },
                           ]}
                           wrapperCol={{ span: 24 }}
+                          labelCol={{ span: 24 }}
                         >
                           <Input.TextArea
                             placeholder="กรอกรับจาก"
                             style={{ width: "100%" }}
-                            rows={4}
+                            rows={5}
                           />
                         </Form.Item>
                       </Col>
 
-                      <Col span={12}>
+                      <Col xs={24} sm={12}>
                         <Form.Item
                           label="ส่ง"
                           name="send"
@@ -667,19 +676,19 @@ const PageManage = () => {
                             },
                           ]}
                           wrapperCol={{ span: 24 }}
+                          labelCol={{ span: 24 }}
                         >
                           <Input.TextArea
                             placeholder="กรอกส่ง"
                             style={{ width: "100%" }}
-                            rows={4}
+                            rows={5}
                           />
                         </Form.Item>
                       </Col>
                     </Row>
                   </Card>
                 </Col>
-              </Row>
-
+</Row>
               <Card
                 headingIcon={<ShoppingCartOutlined />}
                 headingText="รายการสินค้า"
@@ -695,6 +704,7 @@ const PageManage = () => {
                           ...field,
                         }))}
                         pagination={false}
+                        scroll={{ x: 'max-content' }} // Enable horizontal scrolling for tables
                       />
                       <Button
                         style={{ marginTop: "25px" }}
@@ -712,15 +722,16 @@ const PageManage = () => {
 
                 <div className="mt-3">
                   <hr />
-                  <Row gutter={24} className="mt-3">
-                    <Col span={14}>
-                      <div className="grid grid-cols-3 gap-4 mb-2">
-                        <div className=" col-span-1 ">
+                  <Row gutter={[24, 24]} className="mt-3">
+                    <Col xs={24} md={14}>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2"> {/* Adjust grid for responsiveness */}
+                        <div className="col-span-1">
                           <span className="">หมายเหตุ : </span>
                           <Form.Item
                             label=""
                             name="remark"
                             wrapperCol={{ span: 24 }}
+                            labelCol={{ span: 24 }}
                             className="flex-grow"
                           >
                             <TextArea
@@ -733,12 +744,13 @@ const PageManage = () => {
                             />
                           </Form.Item>
                         </div>
-                        <div className=" col-span-1 ">
+                        <div className="col-span-1">
                           <span className="">โน๊ตภายใน : </span>
                           <Form.Item
                             label=""
                             name="note"
                             wrapperCol={{ span: 24 }}
+                            labelCol={{ span: 24 }}
                             className="flex-grow"
                           >
                             <TextArea
@@ -751,15 +763,15 @@ const PageManage = () => {
                             />
                           </Form.Item>
                         </div>
-                        <div className=" col-span-1 "></div>
+                        <div className="col-span-1"></div> {/* This empty div might be removed or adjusted for responsiveness */}
                       </div>
                     </Col>
-                    <Col span={10}>
+                    <Col xs={24} md={10}>
                       <div
                         className="text-right"
                         style={{ fontWeight: "bold", paddingRight: "10px" }}
                       >
-                        <Row gutter={24}>
+                        <Row gutter={[24, 10]}> {/* Adjust gutter */}
                           <Col span={12}>รวมเป็นเงิน :</Col>
                           <Col span={12}>
                             {formatterPrice(
@@ -768,7 +780,7 @@ const PageManage = () => {
                           </Col>
                         </Row>
 
-                        <Row gutter={24} style={{ paddingTop: "10px" }}>
+                        <Row gutter={[24, 10]} style={{ paddingTop: "10px" }}>
                           <Col span={12}>ส่วนลด :</Col>
                           <Col span={12}>
                             <Form.Item noStyle name="discount">
@@ -796,17 +808,16 @@ const PageManage = () => {
                           </Col>
                         </Row>
 
-                        <Row gutter={24} style={{ paddingTop: "10px" }}>
+                        <Row gutter={[24, 10]} style={{ paddingTop: "10px" }}>
                           <Col span={12}>ราคาหลังหักส่วนลด :</Col>
                           <Col span={12}>
                             {formatterPrice(
-                              pageManageDataProvider.FormManager
-                                .priceAfterDiscount
+                              pageManageDataProvider.FormManager.priceAfterDiscount
                             )}
                           </Col>
                         </Row>
 
-                        <Row gutter={24} style={{ paddingTop: "10px" }}>
+                        <Row gutter={[24, 10]} style={{ paddingTop: "10px" }}>
                           <Col span={12}>มัดจำ :</Col>
                           <Col span={12}>
                             <Form.Item noStyle name="deposit">
@@ -838,7 +849,7 @@ const PageManage = () => {
                         </Row>
 
                         {isEditMode && (
-                          <Row gutter={24} style={{ paddingTop: "10px" }}>
+                          <Row gutter={[24, 10]} style={{ paddingTop: "10px" }}>
                             <Col span={12}>ชำระแล้ว :</Col>
                             <Col span={12}>
                               <Form.Item noStyle name="payExtra">
@@ -858,7 +869,7 @@ const PageManage = () => {
                           </Row>
                         )}
 
-                        <Row gutter={24} style={{ paddingTop: "10px" }}>
+                        <Row gutter={[24, 10]} style={{ paddingTop: "10px" }}>
                           <Col span={12}>คงเหลือ :</Col>
                           <Col span={12}>
                             {formatterPrice(
@@ -874,25 +885,20 @@ const PageManage = () => {
             </CardWrapper>
           </Col>
 
-          <Col span={6}>
+          <Col xs={24} sm={24} md={8} lg={8} xl={8} xxl={8} className="ps-0 pt-0 sm:ps-10"> {/* Sidebar area */}
             <CardWrapper>
-           
-
-               <Card>
-                  <Row gutter={24}>
-                       {isEditMode && (
-               
-              
-                    <Col span={24}>
+              <Card>
+                <Row gutter={[24, 24]}>
+                  {isEditMode && (
+                    <Col xs={24}>
                       <Form.Item
                         style={{ width: "100%" }}
                         label="สถานะการชำระ"
                         name="status"
-                        initialValue={status}
-                        rules={[
-                          { required: true, message: "กรุณาเลือกข้อมูล" },
-                        ]}
+                        // initialValue={status} // `status` is not defined in the provided code snippet for `initialValue`
+                        rules={[{ required: true, message: "กรุณาเลือกข้อมูล" }]}
                         wrapperCol={{ span: 24 }}
+                        labelCol={{ span: 24 }}
                       >
                         <Select
                           style={{ width: "100%" }}
@@ -911,137 +917,137 @@ const PageManage = () => {
                         </Select>
                       </Form.Item>
                     </Col>
-                    )}
-                    <Col span={24}>
-                      <Form.Item
-                        label="ผู้ออกบิล"
-                        name="billBy"
-                        rules={[{ required: true, message: "กรุณากรอกข้อมูล" }]}
-                        wrapperCol={{ span: 24 }}
-                      >
-                        <Select
-                          style={{ width: "100%" }}
-                          placeholder="เลือกผู้ออกบิล"
-                          onChange={(value, key) => {
-                            pageManageDataProvider.FormManager.form.setFieldsValue(
-                              {
-                                billBy: value,
-                              }
-                            );
-                          }}
-                        >
-                          {pageManageDataProvider.UserBillManager.userBillOptions.map(
-                            (item, idx) => {
-                              return (
-                                <Select.Option
-                                  key={item.idx}
-                                  value={item.value}
-                                >
-                                  {item.label}
-                                </Select.Option>
-                              );
+                  )}
+                  <Col xs={24}>
+                    <Form.Item
+                      label="ผู้ออกบิล"
+                      name="billBy"
+                      rules={[{ required: true, message: "กรุณากรอกข้อมูล" }]}
+                      wrapperCol={{ span: 24 }}
+                      labelCol={{ span: 24 }}
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+                        placeholder="เลือกผู้ออกบิล"
+                        onChange={(value, key) => {
+                          pageManageDataProvider.FormManager.form.setFieldsValue(
+                            {
+                              billBy: value,
                             }
-                          )}
-                        </Select>
-                      </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                      <Form.Item
-                        label="ประเภท"
-                        name="type"
-                        rules={[
-                          { required: true, message: "กรุณาเลือกข้อมูล" },
-                        ]}
-                        wrapperCol={{ span: 24 }}
+                          );
+                        }}
                       >
-                        <Select
-                          style={{ width: "100%" }}
-                          placeholder="เลือกประเภท"
-                          onChange={(value) => {
-                            pageManageDataProvider.FormManager.form.setFieldsValue(
-                              {
-                                type: value,
-                              }
+                        {pageManageDataProvider.UserBillManager.userBillOptions.map(
+                          (item, idx) => {
+                            return (
+                              <Select.Option key={item.idx} value={item.value}>
+                                {item.label}
+                              </Select.Option>
                             );
-                          }}
-                        >
-                          {pageManageDataProvider.CompanyManager.companyOptions.map(
-                            (item) => {
-                              return (
-                                <Select.Option key={item.id} value={item.label}>
-                                  {item.label}
-                                </Select.Option>
-                              );
-                            }
-                          )}
-                        </Select>
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item
-                        label="การจ่ายเงิน"
-                        name="paymentTypeId"
-                          rules={[
-                          { required: true, message: "กรุณาเลือกข้อมูล" },
-                        ]}
-                        wrapperCol={{ span: 24 }}
-                      >
-                        <Select
-                          style={{ width: "100%" }}
-                          placeholder="เลือกการจ่ายเงิน"
-                          onChange={(value, key) => {
-                            pageManageDataProvider.FormManager.form.setFieldsValue(
-                              {
-                                paymentTypeId: value,
-                              }
-                            );
-                          }}
-                        >
-                          {pageManageDataProvider.PaymentTypeManager.paymentTypeOptions.map(
-                            (item) => {
-                              return (
-                                <Select.Option
-                                  key={item.value}
-                                  value={item.value}
-                                >
-                                  {item.label}
-                                </Select.Option>
-                              );
-                            }
-                          )}
-                        </Select>
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item label="บริจาค" name="donate">
-                        <Checkbox
-                          onChange={(checked) => {
-                            pageManageDataProvider.FormManager.form.setFieldsValue(
-                              {
-                                donate: checked.target.checked,
-                              }
-                            );
-                            if (checked.target.checked)
-                              pageManageDataProvider.FormManager.form.setFieldsValue(
-                                {
-                                  discount: 0,
-                                  deposit: 0,
-                                }
-                              );
-                          }}
-                          checked={
-                            Form.useWatch(
-                              "donate",
-                              pageManageDataProvider.FormManager.form
-                            ) === true
                           }
-                        />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Card>
+                        )}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24}>
+                    <Form.Item
+                      label="ประเภท"
+                      name="type"
+                      rules={[
+                        { required: true, message: "กรุณาเลือกข้อมูล" },
+                      ]}
+                      wrapperCol={{ span: 24 }}
+                      labelCol={{ span: 24 }}
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+                        placeholder="เลือกประเภท"
+                        onChange={(value) => {
+                          pageManageDataProvider.FormManager.form.setFieldsValue(
+                            {
+                              type: value,
+                            }
+                          );
+                        }}
+                      >
+                        {pageManageDataProvider.CompanyManager.companyOptions.map(
+                          (item) => {
+                            return (
+                              <Select.Option key={item.id} value={item.label}>
+                                {item.label}
+                              </Select.Option>
+                            );
+                          }
+                        )}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+
+                  <Col xs={24}>
+                    <Form.Item
+                      label="การจ่ายเงิน"
+                      name="paymentTypeId"
+                      rules={[
+                        { required: true, message: "กรุณาเลือกข้อมูล" },
+                      ]}
+                      wrapperCol={{ span: 24 }}
+                      labelCol={{ span: 24 }}
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+                        placeholder="เลือกการจ่ายเงิน"
+                        onChange={(value, key) => {
+                          pageManageDataProvider.FormManager.form.setFieldsValue(
+                            {
+                              paymentTypeId: value,
+                            }
+                          );
+                        }}
+                      >
+                        {pageManageDataProvider.PaymentTypeManager.paymentTypeOptions.map(
+                          (item) => {
+                            return (
+                              <Select.Option
+                                key={item.value}
+                                value={item.value}
+                              >
+                                {item.label}
+                              </Select.Option>
+                            );
+                          }
+                        )}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+
+                  <Col xs={24}>
+                    <Form.Item label="บริจาค" name="donate">
+                      <Checkbox
+                        onChange={(checked) => {
+                          pageManageDataProvider.FormManager.form.setFieldsValue(
+                            {
+                              donate: checked.target.checked,
+                            }
+                          );
+                          if (checked.target.checked)
+                            pageManageDataProvider.FormManager.form.setFieldsValue(
+                              {
+                                discount: 0,
+                                deposit: 0,
+                              }
+                            );
+                        }}
+                        checked={
+                          Form.useWatch(
+                            "donate",
+                            pageManageDataProvider.FormManager.form
+                          ) === true
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Card>
             </CardWrapper>
           </Col>
         </Row>
