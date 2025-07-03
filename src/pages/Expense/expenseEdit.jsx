@@ -8,6 +8,7 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { Form, Button, Row, Col, Input, InputNumber, Select } from "antd";
+const { Option } = Select;
 import masterService from "../../services/masterService";
 import expenseService from "../../services/expenseService";
 import DatePicker from "../../components/DatePicker";
@@ -21,6 +22,7 @@ const ExpenseEdit = () => {
   const [data, setData] = useState([]);
   const [deletedItems, setDeletedItems] = useState([]);
   const [expenseType, setExpenseType] = useState([]);
+  const [paymentType, setPaymentType] = useState([]);
   const [loading, setLoading] = useState(false);
   const [columns, setColumns] = useState([]);
 
@@ -33,12 +35,80 @@ const ExpenseEdit = () => {
     }
   };
 
+  const getMasterPaymentType = async () => {
+    const response = await masterService.getMasterPaymentType();
+    if (response?.data?.length > 0) {
+      setPaymentType(response.data);
+    } else {
+      console.log("Error fetching expense types");
+    }
+  };
+
   const getDateOnly = (isoString) => {
     return new Date(isoString).toISOString().split("T")[0];
   };
 
+  const [showBillInputs, setShowBillInputs] = useState({});
+
+  const handleGroupTypeChange = (value, index) => {
+  const newData = [...data];
+  newData[index].group_type_id = value;
+  newData[index].showBillInput = value === 1;
+  setData(newData);
+  form.setFieldsValue({ data: newData });
+};
+
   const setUpColumns = () => {
     const cols = [
+      {
+        title: "ประเภท",
+        dataIndex: "group_type_id",
+        key: "group_type_id",
+        align: "center",
+        render: (text, record, index) => (
+  <>
+    <Form.Item
+      name={["data", index, "group_type_id"]}
+      rules={[{ required: true, message: "กรุณาเลือกประเภท" }]}
+      style={{ width: "100%", marginBottom: 15 }}
+    >
+      <Select
+        placeholder="เลือกประเภท"
+        style={{ width: "100%" }}
+        value={record.group_type_id}
+        onChange={(value) => handleGroupTypeChange(value, index)}
+      >
+        <Option key={0} value={0}>
+          ทั่วไป
+        </Option>
+        <Option key={1} value={1}>
+          บิล
+        </Option>
+      </Select>
+    </Form.Item>
+
+   {(record.showBillInput || record.group_type_id == 1) && (
+  <Row gutter={8} align="middle">
+    <Col span={12}>
+      <span className="font-bold" style={{float : "right"}}>เลขที่บิล : </span>
+    </Col>
+    <Col span={12}>
+      <Form.Item
+        name={["data", index, "ref_bill_number"]}
+        rules={[{ required: true, message: "กรุณากรอกรหัสเลขที่บิล" }]}
+        style={{ marginBottom: 0 }}
+      >
+        <Input placeholder="รหัสเลขที่บิล" />
+      </Form.Item>
+    </Col>
+  </Row>
+)}
+
+  </>
+)
+
+
+      },
       {
         title: "ประเภทรายจ่าย",
         dataIndex: "expenseType",
@@ -95,6 +165,27 @@ const ExpenseEdit = () => {
         ),
       },
       {
+        title: "วิธีการชำระเงิน",
+        dataIndex: "payment_type_name",
+        key: "payment_type_name",
+        align: "center",
+        render: (text, record, index) => (
+          <Form.Item
+            name={["data", index, "payment_type_id"]}
+            rules={[{ required: true, message: "กรุณาเลือกประเภทรายจ่าย" }]}
+            style={{ width: "100%" }}
+          >
+            <Select placeholder="เลือกวิธีการชำระเงิน" style={{ width: "100%" }}>
+              {paymentType.map((item) => (
+                <Select.Option key={item.id} value={item.id}>
+                  {item.payment_name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        ),
+      },
+      {
         title: "หมายเหตุ",
         dataIndex: "expenseRemark",
         key: "expenseRemark",
@@ -136,12 +227,18 @@ const ExpenseEdit = () => {
   };
 
   const mapExpenseData = (rawData) => {
+
     return rawData.map((item) => ({
       id: item.id,
       expenseType: item.expense_type_id,
       expenseName: item.expense_name,
       amount: Number(item.amount),
       expenseRemark: item.remark || "",
+      group_type_id : item.group_type_id || 0,
+      ref_bill_number : item.ref_bill_number,
+      payment_type_id : item.payment_type_id,
+      payment_type_name : item.payment_type_name,
+      ref_cheque_number : item.ref_cheque_number,
     }));
   };
 
@@ -152,7 +249,7 @@ const ExpenseEdit = () => {
 
     if (Array.isArray(response?.data)) {
       response.data.forEach((item) => {
-        const dateKey = getDateOnly(item.update_date);
+        const dateKey = getDateOnly(item.create_date);
         if (dateKey === id) {
           groupData.push(item);
         }
@@ -165,43 +262,45 @@ const ExpenseEdit = () => {
     form.setFieldsValue({ data: mappedData });
   };
 
-const removeRow = (index) => {
-  const currentValues = form.getFieldValue("data") || [];
+  const removeRow = (index) => {
+    const currentValues = form.getFieldValue("data") || [];
 
-  if (index < 0 || index >= currentValues.length) {
-    console.warn("Invalid index for removal:", index);
-    return;
-  }
+    if (index < 0 || index >= currentValues.length) {
+      console.warn("Invalid index for removal:", index);
+      return;
+    }
 
-  const newData = [...currentValues];
-  const removedItem = newData[index];
-  newData.splice(index, 1);
+    const newData = [...currentValues];
+    const removedItem = newData[index];
+    newData.splice(index, 1);
 
-  setData(newData);
-  form.setFieldsValue({ data: newData });
+    setData(newData);
+    form.setFieldsValue({ data: newData });
 
-  if (removedItem?.id && removedItem.id !== 0) {
-    setDeletedItems((prev) => [...prev, removedItem]);
-  }
-};
-
-
-
-const addNewRow = () => {
-  const currentValues = form.getFieldValue("data") || [];
-  const newRow = {
-    id: 0,
-    expenseType: null,
-    expenseName: "",
-    amount: null,
-    expenseRemark: "",
+    if (removedItem?.id && removedItem.id !== 0) {
+      setDeletedItems((prev) => [...prev, removedItem]);
+    }
   };
-  const newData = [...currentValues, newRow];
 
-  setData(newData);
-  form.setFieldsValue({ data: newData });
-};
+  const addNewRow = () => {
+    const currentValues = form.getFieldValue("data") || [];
+    const newRow = {
+      id: 0,
+      expenseType: null,
+      expenseName: "",
+      amount: null,
+      expenseRemark: "",
+      group_type_id :0,
+      ref_bill_number : "",
+      payment_type_id : 0,
+      payment_type_name : "",
+      ref_cheque_number : ""
+    };
+    const newData = [...currentValues, newRow];
 
+    setData(newData);
+    form.setFieldsValue({ data: newData });
+  };
 
   const onConfirm = async (values) => {
     ShowConfirm(
@@ -215,7 +314,6 @@ const addNewRow = () => {
   };
 
   const onSubmit = async (values) => {
-
     let success = true;
 
     for (const item of values.data) {
@@ -224,6 +322,11 @@ const addNewRow = () => {
         expenseName: item.expenseName,
         amount: item.amount,
         expenseRemark: item.expenseRemark || "",
+        group_type_id : item.group_type_id || 0,
+        ref_bill_number : item.ref_bill_number || "",
+        payment_type_id : item.payment_type_id || 0,
+        payment_type_name : item.payment_type_name || "",
+        ref_cheque_number : item.ref_cheque_number || "",
       };
 
       let response;
@@ -241,15 +344,15 @@ const addNewRow = () => {
     }
 
     for (const deleted of deletedItems) {
-        if(deleted.id > 0){
-            const requestData = {
-                id: deleted.id
-            };
-            const response = await expenseService.deleteExpense(requestData);
-            if (!response?.data) {
-            success = false;
-            }
+      if (deleted.id > 0) {
+        const requestData = {
+          id: deleted.id,
+        };
+        const response = await expenseService.deleteExpense(requestData);
+        if (!response?.data) {
+          success = false;
         }
+      }
     }
 
     if (success) {
@@ -265,12 +368,13 @@ const addNewRow = () => {
   };
 
   useEffect(() => {
-     const extractedId = location.pathname.split("/")[3];
-        setId(extractedId);
-        if (extractedId) {
-            getExpenseById(extractedId);
-        }
-        getMasterExpenseType();
+    const extractedId = location.pathname.split("/")[3];
+    setId(extractedId);
+    if (extractedId) {
+      getExpenseById(extractedId);
+    }
+    getMasterExpenseType();
+    getMasterPaymentType();
   }, []);
 
   useEffect(() => {
