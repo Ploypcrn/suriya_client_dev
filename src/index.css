@@ -145,3 +145,11 @@ img {
 .page-container footer {
     margin-top: auto;
 }
+
+.max-w-10xl{
+       max-width: 100rem; 
+}
+
+.font-bold{
+    font-weight: 700 !important;
+}
