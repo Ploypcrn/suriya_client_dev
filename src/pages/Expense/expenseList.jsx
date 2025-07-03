@@ -33,11 +33,11 @@ const ExpenseList = () => {
             },
             {
                 title: "วันที่",
-                dataIndex: "update_date",
-                key: "update_date",
+                dataIndex: "create_date",
+                key: "create_date",
                 align: "center",
                 render: (text, record) => (
-                    new Date(record.update_date).toLocaleDateString("th-TH", {
+                    new Date(record.create_date).toLocaleDateString("th-TH", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -46,75 +46,61 @@ const ExpenseList = () => {
                 )
             },
             {
-                title: "รวมรายจ่าย",
-                dataIndex: "total_amount",
-                key: "total_amount",
+                title: "ประเภท",
+                dataIndex: "group_type_id",
+                key: "group_type_id",
                 align: "center",
-                render: (text) => (
-                    <div className="flex justify-end">
-                        <label htmlFor="">
-                            {
-                                formatterPrice(text)
-                            }</label>
-                    </div>
-                )
-            },
-            {
-                title: "น้ำมัน",
-                dataIndex: "total_expense_type_1",
-                key: "total_expense_type_1",
-                align: "center",
-                render: (text) => (
-                    <div className="flex justify-end">
-                        <label htmlFor="">
-                            {
-                                formatterPrice(text)
-                            }</label>
-                    </div>
-                )
-            },
-            {
-                title: "เบิกเงินล่วงหน้า",
-                dataIndex: "total_expense_type_2",
-                key: "total_expense_type_2",
-                align: "center",
-                render: (text) => (
-                    <div className="flex justify-end">
-                        <label htmlFor="">
-                            {
-                                formatterPrice(text)
-                            }</label>
-                    </div>
-                )
-            },
-           {
-                title: "ทางด่วน",
-                dataIndex: "total_expense_type_3",
-                key: "total_expense_type_3",
-                align: "center",
-                render: (text) => (
-                    <div className="flex justify-end">
-                        <label htmlFor="">
-                            {
-                                formatterPrice(text)
-                            }</label>
+                render: (text, record) => (
+                    <div className="flex justify-center">
+                        {record.group_type_id > 0 && record.ref_bill_number != '' ? record.ref_bill_number : 'ทั่วไป'}
                     </div>
                 )
             },
              {
-                title: "อื่นๆ",
-                dataIndex: "total_expense_type_4",
-                key: "total_expense_type_4",
+                title: "ประเภทรายจ่าย",
+                dataIndex: "expense_type_name",
+                key: "expense_type_name",
                 align: "center",
                 render: (text) => (
-                    <div className="flex justify-end">
-                        <label htmlFor="">
-                            {
-                                formatterPrice(text)
-                            }</label>
+                    <div className="flex justify-start">
+                        {text}
                     </div>
                 )
             },
+                {
+                title: "จำนวน",
+                dataIndex: "amount",
+                key: "amount",
+                align: "right",
+                render: (text) => (
+                    <div className="flex justify-end">
+                        {formatterPrice(text)}
+                    </div>
+                )
+            },
+             {
+                title: "วิธีการชำระเงิน",
+                dataIndex: "payment_type_name",
+                key: "payment_type_name",
+                align: "center",
+                render: (text) => (
+                    <div className="flex justify-left">
+                        {text}
+                    </div>
+                )
+            },
+                {
+                title: "หมายเหตุ",
+                dataIndex: "remark",
+                key: "remark",
+                align: "left",
+                render: (text) => (
+                    <div className="flex justify-left">
+                        {text}
+                    </div>
+                )
+            },
+           
             {
                 title: "ดำเนินการ",
                 key: "action",
@@ -126,7 +112,7 @@ const ExpenseList = () => {
                             className="btn-edit"
                             type="link"
                             onClick={() => {
-                                navigate(`/expenses/edit/${record.update_date}`);
+                                navigate(`/expenses/edit/${new Date(record.create_date).toISOString().slice(0, 10)}`);
                             }}
                             icon={<EditOutlined />}
                         />
@@ -134,7 +120,7 @@ const ExpenseList = () => {
                             className="btn-delete"
                             type="link"
                             onClick={() => {
-                                onConfirm(record.ids)
+                                onConfirm(record.id)
                             }}
                             icon={<DeleteOutlined />}
                         />
@@ -164,60 +150,56 @@ const ExpenseList = () => {
             setLoading(true);
             const response = await expenseService.getExpense();
 
-            const grouped = {};
+            // const grouped = {};
 
+            // response?.data.forEach(item => {
+            //     const dateKey = getDateOnly(item.update_date);
+            //     if (!grouped[dateKey]) {
+            //         grouped[dateKey] = {
+            //             update_date: dateKey,
+            //             total_amount: 0,
+            //             total_expense_type_1: 0,
+            //             total_expense_type_2: 0,
+            //             total_expense_type_3: 0,
+            //             total_expense_type_4: 0,
+            //             ids : []
+            //         };
+            //     }
 
+            //     const amount = parseFloat(item.amount || "0");
 
-            response?.data.forEach(item => {
-                const dateKey = getDateOnly(item.update_date);
-                if (!grouped[dateKey]) {
-                    grouped[dateKey] = {
-                        update_date: dateKey,
-                        total_amount: 0,
-                        total_expense_type_1: 0,
-                        total_expense_type_2: 0,
-                        total_expense_type_3: 0,
-                        total_expense_type_4: 0,
-                        ids : []
-                    };
-                }
+            //     grouped[dateKey].total_amount += amount;
+            //     grouped[dateKey].ids.push(item.id);
 
-                const amount = parseFloat(item.amount || "0");
+            //     switch (item.expense_type_id) {
+            //         case 1:
+            //             grouped[dateKey].total_expense_type_1 += amount;
+            //             break;
+            //         case 2:
+            //             grouped[dateKey].total_expense_type_2 += amount;
+            //             break;
+            //         case 3:
+            //             grouped[dateKey].total_expense_type_3 += amount;
+            //             break;
+            //         case 4:
+            //             grouped[dateKey].total_expense_type_4 += amount;
+            //             break;
+            //     }
+            // });
 
-                grouped[dateKey].total_amount += amount;
-                grouped[dateKey].ids.push(item.id);
+            // // Convert to array and add ID (for table)
+            // const mappedData = Object.entries(grouped).map(([date, data], index) => ({
+            //     id: index + 1,
+            //     update_date: data.update_date,
+            //     total_amount: data.total_amount,
+            //     total_expense_type_1: data.total_expense_type_1,
+            //     total_expense_type_2: data.total_expense_type_2,
+            //     total_expense_type_3: data.total_expense_type_3,
+            //     total_expense_type_4: data.total_expense_type_4,
+            //     ids: data.ids.join(",")
+            // }));
 
-                switch (item.expense_type_id) {
-                    case 1:
-                        grouped[dateKey].total_expense_type_1 += amount;
-                        break;
-                    case 2:
-                        grouped[dateKey].total_expense_type_2 += amount;
-                        break;
-                    case 3:
-                        grouped[dateKey].total_expense_type_3 += amount;
-                        break;
-                    case 4:
-                        grouped[dateKey].total_expense_type_4 += amount;
-                        break;
-                }
-            });
-
-            // Convert to array and add ID (for table)
-            const mappedData = Object.entries(grouped).map(([date, data], index) => ({
-                id: index + 1,
-                update_date: data.update_date,
-                total_amount: data.total_amount,
-                total_expense_type_1: data.total_expense_type_1,
-                total_expense_type_2: data.total_expense_type_2,
-                total_expense_type_3: data.total_expense_type_3,
-                total_expense_type_4: data.total_expense_type_4,
-                ids: data.ids.join(",")
-            }));
-
-            console.log(mappedData)
-
-            setData(mappedData);
+            setData(response?.data);
             setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -297,7 +279,6 @@ const ExpenseList = () => {
               isType={true}
               type={expenseType}
               onSearch={(values) => {
-                console.log("values", values);
                 searchExpense(values);
               }}
             />
