@@ -13,6 +13,7 @@ import masterService from "../../services/masterService";
 import expenseService from "../../services/expenseService";
 import DatePicker from "../../components/DatePicker";
 import TableComponent from "../../components/Table/index2";
+import dayjs from "dayjs";
 
 const ExpenseEdit = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const ExpenseEdit = () => {
     if (response?.data?.length > 0) {
       setPaymentType(response.data);
     } else {
-      console.log("Error fetching expense types");
+      console.log("Error fetching payment");
     }
   };
 
@@ -230,6 +231,7 @@ const ExpenseEdit = () => {
 
     return rawData.map((item) => ({
       id: item.id,
+      expense_date : id,
       expenseType: item.expense_type_id,
       expenseName: item.expense_name,
       amount: Number(item.amount),
@@ -249,7 +251,7 @@ const ExpenseEdit = () => {
 
     if (Array.isArray(response?.data)) {
       response.data.forEach((item) => {
-        const dateKey = getDateOnly(item.create_date);
+        const dateKey = getDateOnly(item.expense_date);
         if (dateKey === id) {
           groupData.push(item);
         }
@@ -287,6 +289,7 @@ const ExpenseEdit = () => {
     const newRow = {
       id: 0,
       expenseType: null,
+      expense_date : id,
       expenseName: "",
       amount: null,
       expenseRemark: "",
@@ -318,6 +321,7 @@ const ExpenseEdit = () => {
 
     for (const item of values.data) {
       let requestData = {
+        expense_date : id,
         expenseType: parseInt(item.expenseType),
         expenseName: item.expenseName,
         amount: item.amount,
@@ -416,9 +420,17 @@ const ExpenseEdit = () => {
           <div className="content-list">
             <div style={{ width: "20%", padding: "15px 20px" }}>
               <DatePicker
-                disabled
-                value={id}
-                format="YYYY/MM/DD"
+                value={(dayjs(id).format("DD/MM/") + (dayjs(id).year() + 543))}
+                format="DD/MM/YYYY"
+                 onChange={(date, dateString) => {
+                  const [day, month, buddhistYear] = date.split("/");
+                  const christianYear = parseInt(buddhistYear) - 543;
+                  const newDate = `${day}/${month}/${christianYear}`;
+                  const isoDate = dayjs(newDate, "DD/MM/YYYY").format("YYYY-MM-DD");
+                  console.log('isoDate', isoDate)
+                  setId(isoDate);
+                  // getExpenseById(isoDate);
+                }}
                 style={{ fontSize: "20px" }}
               />
             </div>
