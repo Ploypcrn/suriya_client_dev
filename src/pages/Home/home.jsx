@@ -40,6 +40,8 @@ const FinancialDashboard = () => {
     deposit: 0,
     actual: 0,
     expenses: 0,
+    total_remain_bill : 0,
+    total_bill : 0
   });
 
   const [expenseBreakdown, setexpenseBreakdown] = useState({
@@ -227,8 +229,10 @@ const FinancialDashboard = () => {
         acc.pending = item.remain;
         acc.discount = item.discount;
         acc.deposit = item.deposit;
-        acc.actual = item.price_after_discount;
+        acc.actual = item.price_after_discount - item.remain;
         acc.expenses = item.total_expense;
+        acc.total_remain_bill = item.total_remain_bill,
+        acc.total_bill = item.total_bill
         return acc;
       },
       {
@@ -328,15 +332,91 @@ const FinancialDashboard = () => {
     return "฿" + formatterPrice(amount ?? 0);
   };
 
-  const SummaryCard = ({ title, amount, changePercent, isPositive }) => (
-    <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden text-center">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600"></div>
-      <h6 className="text-sm text-gray-600 font-semibold mb-3">{title}</h6>
-      <div className="text-2xl font-bold text-gray-800 mb-2">
-        {formatCurrency(amount)}
+const SummaryCard = ({ title, amount, extraClass, fontColor, badge }) => (
+  <div className={`flex flex-col justify-center items-center text-center ${extraClass} backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden`}>
+    <div className="flex items-center justify-center gap-2 mb-3">
+      <h6 className={`text-sm ${fontColor} font-bold`}>{title}</h6>
+      {badge && (
+        <span className="bg-blue-100 text-blue-800 text-md font-bold px-2 py-1 rounded-full">
+          {badge}
+        </span>
+      )}
+    </div>
+    <div className={`text-2xl font-bold ${fontColor} mb-2`}>
+      {formatCurrency(amount)}
+    </div>
+  </div>
+);
+
+const SummaryCardCombined = ({
+  title,
+  leftLabel,
+  leftAmount,
+  leftBadge,
+  rightLabel,
+  rightAmount,
+  rightBadge,
+  extraClass,
+  fontColor
+}) => (
+  <div
+    className={`col-span-1 md:col-span-2 ${extraClass} backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden`}
+  >
+    {/* Combined Content */}
+    <div className="w-full overflow-hidden relative">
+      <div className="flex divide-x-2 pt-2 divide-gray-200">
+        {/* Left Side */}
+        <div className="flex-1 p-3 transition-all duration-300 flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center text-center w-full">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-sm text-gray-600 font-medium">{leftLabel}</span>
+              <span className="bg-blue-500 text-white text-sm font-bold px-2 py-1 rounded-full shadow-sm">
+                {leftBadge} บิล
+              </span>
+            </div>
+            <div className="text-lg font-bold text-blue-700">
+              {formatCurrency(leftAmount)}
+            </div>
+          </div>
+        </div>
+        {/* Right Side */}
+        <div className="flex-1 p-3 transition-all duration-300 flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center text-center w-full">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-sm text-gray-600 font-medium">{rightLabel}</span>
+              <span className="bg-red-500 text-white text-sm font-bold px-2 py-1 rounded-full shadow-sm">
+                {rightBadge} บิล
+              </span>
+            </div>
+            <div className="text-lg font-bold text-red-500">
+              {formatCurrency(rightAmount)}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  );
+    {/* Progress Bar */}
+    <div className="w-full px-3 pb-3">
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-xs font-medium text-gray-600">
+          สถานะการชำระเงิน
+        </span>
+        <span className="text-xs font-medium text-gray-600">
+          {Math.round((leftBadge / (leftBadge + rightBadge)) * 100)}% ชำระแล้ว
+        </span>
+      </div>
+      
+      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden shadow-inner">
+        <div 
+          className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-1000 ease-out relative"
+          style={{ width: `${(leftBadge / (leftBadge + rightBadge)) * 100}%` }}
+        >
+          <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
   const ExpenseItem = ({ title, amount, color, index }) => (
     <div
@@ -382,7 +462,9 @@ const FinancialDashboard = () => {
         year: "numeric",
       })}
 </td>
-
+ <td className="px-4 py-3 border-b border-gray-200 text-right">
+          {item.total_bill}
+        </td>
         <td className="px-4 py-3 border-b border-gray-200 text-right">
           {formatCurrency(item.total)}
         </td>
@@ -554,12 +636,46 @@ const FinancialDashboard = () => {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-5">
-          <SummaryCard title="ยอดรับทั้งหมด" amount={totals.received} />
-          <SummaryCard title="ยอดค้างชำระ" amount={totals.pending} />
-          <SummaryCard title="ยอดส่วนลด" amount={totals.discount} />
-          <SummaryCard title="ยอดมัดจำ" amount={totals.deposit} />
-          <SummaryCard title="ยอดรับจริง" amount={totals.actual} />
-          <SummaryCard title="รายจ่ายรวม" amount={totals.expenses} />
+          <SummaryCard 
+            title="ยอดรับจริง" 
+            amount={totals.actual} 
+            extraClass="bg-blue-500" 
+            fontColor="text-white" 
+          />
+     <SummaryCardCombined
+  title="ยอดรวมทั้งหมด"
+  leftLabel="ยอดรับรวม"
+  leftAmount={totals.received}
+  leftBadge={totals.total_bill}
+  rightLabel="ยอดค้างชำระ"
+  rightAmount={totals.pending}
+  rightBadge={totals.total_remain_bill}
+  extraClass="bg-white"
+  fontColor="text-green-600"
+/>
+
+
+          
+          {/* <SummaryCard 
+            title="ยอดรับรวม" 
+            amount={totals.received} 
+            extraClass="bg-white" 
+            fontColor="text-green-600"
+            badge="5 บิล"
+          />
+          <SummaryCard 
+            title="ยอดค้างชำระ" 
+            amount={totals.pending} 
+            extraClass="bg-white" 
+            fontColor="text-red-600"
+            badge="2 บิล"
+          /> */}
+          <SummaryCard 
+            title="รายจ่ายรวม" 
+            amount={totals.expenses} 
+            extraClass="bg-red-500" 
+            fontColor="text-white"
+          />
         </div>
 
         {/* Charts */}
@@ -680,11 +796,14 @@ const FinancialDashboard = () => {
   className="overflow-y-auto"
   style={{ maxHeight: "400px" }}  // กำหนดความสูงที่ต้องการให้ scroll ได้
 >
-  <table className="w-full text-sm table-fixed border-collapse border border-gray-300">
+  <table className="w-full text-md table-fixed border-collapse border border-gray-300">
     <thead className="bg-gray-50 sticky top-0 z-10">
       <tr>
           <th className="px-4 py-3 text-left font-semibold text-gray-700 border-b-2 border-gray-200">
                     วันที่
+                  </th>
+                  <th className="px-4 py-3 text-right font-semibold text-gray-700 border-b-2 border-gray-200">
+                    จำนวนบิล
                   </th>
                   <th className="px-4 py-3 text-right font-semibold text-gray-700 border-b-2 border-gray-200">
                     ยอดรับ (฿)
