@@ -402,14 +402,14 @@ const SummaryCardCombined = ({
           สถานะการชำระเงิน
         </span>
         <span className="text-xs font-medium text-gray-600">
-          {Math.round(((leftBadge - rightBadge) / leftBadge) * 100)}% ชำระแล้ว
+          {Math.round(leftBadge <= 0 ? 0 : (((leftBadge - rightBadge) / leftBadge) * 100))}% ชำระแล้ว
         </span>
       </div>
       
       <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden shadow-inner">
         <div 
           className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-1000 ease-out relative"
-          style={{ width: `${((leftBadge - rightBadge) / leftBadge) * 100}%` }}
+          style={{ width: `${(leftBadge <= 0 ? 0 : ((leftBadge - rightBadge) / leftBadge) * 100)}%` }}
         >
           <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
         </div>
