@@ -373,10 +373,6 @@ const QuotationPDF = () => {
         </View>
         <View style={[styles.customerInfoTableCell1]}>
           <Text>
-            ที่อยู่ไปรับ:{" "}
-            <Text style={{ fontWeight: "normal" }}>{data.customer.name}</Text>
-          </Text>
-          <Text>
             วัน/เวลาที่รับ:{" "}
             <Text style={{ fontWeight: "normal" }}>
               {data.customer.receivedate}
