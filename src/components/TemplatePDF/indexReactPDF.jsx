@@ -183,7 +183,7 @@ const QuotationPDF = () => {
     page: {
       padding: 30,
       paddingTop: 10,
-      fontSize: 14,
+      fontSize: 15,
       fontFamily: "THSarabunNew",
     },
     header: {
@@ -217,7 +217,7 @@ const QuotationPDF = () => {
       lineHeight: 0.9,
     },
     customerInfoTableCell1: {
-      width: "37%",
+      width: "35%",
       flexWrap: "wrap",
       // overflow: "hidden",
       textAlign: "left",
@@ -226,11 +226,11 @@ const QuotationPDF = () => {
       lineHeight: 1,
     },
     customerInfoTableCell2: {
-      width: "26%",
+      width: "27.5%",
       flexWrap: "wrap",
       // overflow: "hidden",
       textAlign: "left",
-      paddingVertical: 2,
+      // paddingVertical: 2,
       lineHeight: 1,
       paddingRight: 0,
     },
@@ -266,7 +266,7 @@ const QuotationPDF = () => {
     summaryContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
-      alignItems: "center",
+      // alignItems: "center",
       padding: 5,
     },
   });
@@ -561,15 +561,16 @@ const QuotationPDF = () => {
         }}
       >
         <View style={styles.summaryContainer}>
-          <View style={{ flexDirection: "column", width: "50%" }}>
-            <Text style={{ fontWeight: "bold" }}>
-              หมายเหตุ:{" "}
-              <Text style={{ fontWeight: "normal" }}>
-                {loadData?.remark || "-"}
-              </Text>
-            </Text>
-          </View>
-          <View style={{ flexDirection: "column", width: "50%" }}>
+         <View style={{ flexDirection: "column", width: "45%", justifyContent: "flex-start" }}>
+  <Text style={{ fontWeight: "bold" }}>
+    หมายเหตุ:{" "}
+    <Text style={{ fontWeight: "normal" }}>
+      {loadData?.remark || "-"}
+    </Text>
+  </Text>
+</View>
+
+          <View style={{ flexDirection: "column", width: "55%" }}>
             {sum !== remaining && (
               <View
                 style={{
@@ -726,13 +727,13 @@ const QuotationPDF = () => {
             padding: 5,
           }}
         >
-          <View style={{ width: "50%" }}></View>
+          <View style={{ width: "45%" }}></View>
           <View
             style={{
-              width: "50%",
+              width: "55%",
               display: "flex",
               flexDirection: "row",
-              alignItems: "center",
+              // alignItems: "center",
             }}
           >
             <Text
@@ -986,7 +987,39 @@ const QuotationPDF = () => {
                 products={products}
                 startProductIndex={pageIndex === 0 ? undefined : pageIndex * 10}
               />
-              {pageIndex != chunkedProducts.length - 1 && <SubFooter />}
+              {/* {pageIndex != chunkedProducts.length - 1 && <SubFooter />} */}
+
+              {
+                pageIndex != chunkedProducts.length - 1 && (
+                   <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      backgroundColor: "#eee",
+                      padding: 5,
+                      marginTop: "auto",
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 4,
+                      }}
+                    >
+                    <View style={{ flexDirection: "row" }}>
+                          <View style={{ width: "100%", justifyContent: "flex-end" }}>
+                            <Text style={{ fontWeight: "bold", textAlign: "right" }}>
+                              ดูต่อหน้า {(pageIndex + 2)} {">"}
+                            </Text>
+                          </View>
+                        </View>
+                    </View>
+                  </View>
+                )
+              }
+
               {pageIndex == chunkedProducts.length - 1 && <Footer />}
             </>
           </Page>
