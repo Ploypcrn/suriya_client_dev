@@ -148,10 +148,7 @@ const QuotationPDF = () => {
       taxId: loadData?.taxid,
       receivedate: (
         <>
-          {loadData?.receivedate}{" "}
-          {dayjs(loadData?.receivetime, "HH:mm").isValid()
-            ? `${dayjs(loadData?.receivetime, "HH:mm").format("HH:mm")}`
-            : ""}
+          {loadData?.receivedate}{" "}{loadData?.receivetime ? loadData?.receivetime?.slice(0, 5) : ""}
         </>
       ),
     },
