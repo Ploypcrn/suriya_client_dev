@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import {
-  Document,
+  Document, 
   Page,
   Text,
   View,
@@ -10,12 +10,16 @@ import {
   Font,
   PDFDownloadLink,
 } from "@react-pdf/renderer";
-import logo from "../../assets/logo_login.jpg"; // โลโก้บริษัท
+import logo from "../../assets/logo_login.jpg";
 import { formatterPrice } from "../../utils/formatterPrice";
 import { bahttext } from "bahttext";
 import CompanyServer from "../../services/companyService";
 import { textMap } from "../../constant/status";
-import dayjs from "dayjs";
+
+import { pdf } from '@react-pdf/renderer';
+import { pdfjs } from 'react-pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.js';
+
 
 Font.register({
   family: "THSarabunNew",
@@ -48,6 +52,92 @@ const QuotationPDF = () => {
   const [vat, setVat] = useState(0);
   const [payExtra, setPayExtra] = useState("");
   const [priceAfterDiscount, setPriceAfterDiscount] = useState(0);
+  const [numPages, setNumPages] = useState(null);
+  const [canvases, setCanvases] = useState([]);
+  const [pdfFile, setPdfFile] = useState("/example.pdf");
+
+
+  // ข้อมูลตัวอย่าง
+  const data = {
+    billno: loadData?.billno,
+    headingText: headingText,
+    customer: {
+      name: loadData?.deceased,
+      contact: loadData?.contact,
+      address: loadData?.address,
+      phone: loadData?.phone,
+      receive: loadData?.receive,
+      send: loadData?.send,
+      receiveFrom: loadData?.receive,
+      billType: loadData?.billtype,
+      taxId: loadData?.taxid,
+      receivedate: (
+        <>
+          {loadData?.receivedate}{" "}{loadData?.receivetime ? loadData?.receivetime?.slice(0, 5) : ""}
+        </>
+      ),
+    },
+    bill: {
+      bookno: loadData?.bookno,
+      billno: loadData?.billno,
+      billuser: loadData?.billuser,
+      issuedate: loadData?.issuedate,
+      status: textMap?.[loadData?.status],
+      company_name: loadData?.company_name,
+      paymentname: loadData?.paymentname,
+    },
+    products: listProduct.map((product, i) => ({
+      id: i,
+      name: product.stock_name,
+      qty: product.amount_used,
+      unitPrice: product.price,
+      totalPrice: product.total_price,
+    })),
+    summary: {
+      total: 4000,
+      deposit: 2000,
+      net: 2000,
+    },
+  };
+
+  const handleRenderSuccess = (pageIndex) => {
+    const pageCanvas = document.querySelectorAll(".react-pdf__Page canvas")[pageIndex];
+    setCanvases((prev) => {
+      const newArr = [...prev];
+      newArr[pageIndex] = pageCanvas;
+      return newArr;
+    });
+  };
+
+  const handleExportAllPagesAsImages = async () => {
+  const blob = await pdf(<SuriyaPDF />).toBlob();
+  const pdfData = await blob.arrayBuffer();
+
+  const loadingTask = pdfjs.getDocument({ data: pdfData });
+  const pdfDoc = await loadingTask.promise;
+
+  for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+    const page = await pdfDoc.getPage(pageNum);
+
+    const viewport = page.getViewport({ scale: 2 });
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+
+    await page.render({ canvasContext: context, viewport }).promise;
+
+    const imgData = canvas.toDataURL('image/png');
+
+    // ดาวน์โหลดรูปแต่ละหน้า (ตั้งชื่อไฟล์ตามเลขหน้า)
+    const link = document.createElement('a');
+    link.href = imgData;
+    link.download = `${data.billno}${(pdfDoc.numPages > 1 ? ("-page" + pageNum) : "")}.png`;
+    link.click();
+  }
+};
+
+
   const getDataCompanyByID = () => {
     if (!localStorage.getItem("company_id")) {
       window.reload();
@@ -132,48 +222,6 @@ const QuotationPDF = () => {
   }, [localStorage.getItem("data")]);
   //#endregion
 
-  // ข้อมูลตัวอย่าง
-  const data = {
-    billno: loadData?.billno,
-    headingText: headingText,
-    customer: {
-      name: loadData?.deceased,
-      contact: loadData?.contact,
-      address: loadData?.address,
-      phone: loadData?.phone,
-      receive: loadData?.receive,
-      send: loadData?.send,
-      receiveFrom: loadData?.receive,
-      billType: loadData?.billtype,
-      taxId: loadData?.taxid,
-      receivedate: (
-        <>
-          {loadData?.receivedate}{" "}{loadData?.receivetime ? loadData?.receivetime?.slice(0, 5) : ""}
-        </>
-      ),
-    },
-    bill: {
-      bookno: loadData?.bookno,
-      billno: loadData?.billno,
-      billuser: loadData?.billuser,
-      issuedate: loadData?.issuedate,
-      status: textMap?.[loadData?.status],
-      company_name: loadData?.company_name,
-      paymentname: loadData?.paymentname,
-    },
-    products: listProduct.map((product, i) => ({
-      id: i,
-      name: product.stock_name,
-      qty: product.amount_used,
-      unitPrice: product.price,
-      totalPrice: product.total_price,
-    })),
-    summary: {
-      total: 4000,
-      deposit: 2000,
-      net: 2000,
-    },
-  };
 
   // สไตล์ PDF
   const styles = StyleSheet.create({
@@ -947,11 +995,18 @@ const QuotationPDF = () => {
     chunkedProducts.push(data.products.slice(i, i + 10));
   }
 
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+  }
+
   const SuriyaPDF = () => (
-    <Document>
+    <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
       <>
         {chunkedProducts.map((products, pageIndex) => (
-          <Page key={pageIndex} size="A4" style={styles.page}>
+          <Page key={`page_${pageIndex + 1}`} pageNumber={pageIndex + 1} size="A4" style={styles.page}
+          scale={1.5}
+          onRenderSuccess={() => handleRenderSuccess(pageIndex)}
+          >
             <>
               <Header />
               <View style={[styles.customerInfoTableHeaderRow]}>
@@ -1042,11 +1097,25 @@ const QuotationPDF = () => {
         >
           {({ loading }) => (loading ? "กำลังสร้าง PDF..." : "ดาวน์โหลด PDF")}
         </PDFDownloadLink>
-      </div>
-      <PDFViewer width="100%" height="1200px">
-        <SuriyaPDF />
-      </PDFViewer>
-    </>
+        <button
+          onClick={handleExportAllPagesAsImages}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#52c41a",
+            color: "white",
+            borderRadius: 4,
+            textDecoration: "none",
+            marginLeft: "10px",
+            cursor: "pointer",
+          }}
+        >
+          Export เป็น JPEG
+        </button>
+            </div>
+            <PDFViewer width="100%" height="1200px">
+              <SuriyaPDF />
+            </PDFViewer>
+          </>
   );
 };
 
