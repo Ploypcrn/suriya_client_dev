@@ -18,7 +18,7 @@ import { textMap } from "../../constant/status";
 
 import { pdf } from '@react-pdf/renderer';
 import { pdfjs } from 'react-pdf';
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.js';
+pdfjs.GlobalWorkerOptions.workerSrc = 'https://suriya6-backofficesystem.com/pdfjs/pdf.worker.min.js';
 
 
 Font.register({
